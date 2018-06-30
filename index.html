@@ -227,8 +227,8 @@
                   <h5>Jawaban 6</h5>
                   <canvas id="statistic-prediction" width="800" height="500"></canvas>
                   <div class="buttons">
-                    <button class="btn btn-danger">Kurangi</button>
-                    <button class="btn btn-primary">Prediksi</button>
+                    <button class="btn btn-danger" id="btn-remove-prediction" v-on:click="removePrediction()">Kurangi</button>
+                    <button class="btn btn-primary" id="btn-add-prediction" v-on:click="addPrediction()">Prediksi</button>
                   </div>                  
                 </div>
               </div>

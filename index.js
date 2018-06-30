@@ -11,6 +11,7 @@ var app = new Vue({
     ],
     menu: 0,
     data: [],
+    prediction: [],
     total: [],
     average: [],
     parameter: {
@@ -76,7 +77,7 @@ var app = new Vue({
       {x: 14, y: 3157.987, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
       {x: 15, y: 5525.766, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
     ]; 
-    
+
     this.reInit();
   },
   methods: {
@@ -120,6 +121,8 @@ var app = new Vue({
 
       this.total.ya = this.totalOf(this.adjust(this.data, 'ya'));
       this.average.ya = this.averageOf(this.total.ya, this.parameter.n);
+          
+      this.prediction = this.yOf(this.adjust(this.data, 'x'), this.parameter.b, this.parameter.C);    
     },
     totalOf: function(data) {
       var total = 0;
@@ -194,6 +197,12 @@ var app = new Vue({
     getC: function() {
       return Math.exp(this.getA());
     },
+    addPrediction: function() {     
+      this.prediction.push(this.parameter.C * Math.pow(this.prediction.length+1, this.parameter.b));
+    },
+    removePrediction: function() {
+
+    },
     toFixed: function(value, precision) {
       var power = Math.pow(10, precision || 0);
       return String(Math.round(value * power) / power);
@@ -210,6 +219,26 @@ var app = new Vue({
   }
 });
 
+document.getElementById('btn-add-prediction').addEventListener('click', function() {
+  if (config_prediction.data.datasets.length > 0 && app.prediction.length <= 30) {
+    config_prediction.data.labels.push(app.prediction.length);
+    window.stats_pred.update();
+  }
+  else {
+    alert('It\'s enough ;)');
+  }
+});
+
+document.getElementById('btn-remove-prediction').addEventListener('click', function() {
+  if (app.prediction.length > 15) {
+    app.prediction.splice(app.prediction.length-1, 1);
+    config_prediction.data.labels.splice(app.prediction.length-1, 1);
+    window.stats_pred.update();
+  }
+  else {
+    alert('It\'s enough ;)');
+  }
+});
 
 $(document).ready(function() {
   
@@ -223,23 +252,16 @@ $(document).ready(function() {
 
 });
 
-  var labels = app.adjust(app.data, 'x');
-  var dataset = app.adjust(app.data, 'y');
-  var result = app.adjust(app.data, 'ya');
-  
-  var X = app.lnOf(labels);
-  var Y = app.lnOf(dataset);
-
   var stats_input = document.getElementById('statistic-input');
   if (stats_input) {
-    new Chart(stats_input, {
+    var config_input = {
       type: "line",
-      data: {
-          labels: labels,
+        data: {
+          labels: app.adjust(app.data, 'x'),
           datasets: [
             {
               label: "Data Curah Hujan",
-              data: dataset,
+              data: app.adjust(app.data, 'y'),
               fill: false,
               backgroundColor: "rgba(54, 162, 235, 0.2)",
               borderColor: "rgba(54, 162, 235, 1)",
@@ -250,7 +272,7 @@ $(document).ready(function() {
             },
             {
               label: "Data Hasil Perhitungan",
-              data: result,
+              data: app.adjust(app.data, 'ya'),
               fill: false,            
               backgroundColor: "rgba(254, 162, 135, 0.2)",
               borderColor: "rgba(254, 162, 135, 1)",
@@ -261,43 +283,58 @@ $(document).ready(function() {
               borderDash: [5, 5],
             },
           ]
-      },
-      options: app.chart.options
-    }); 
+        },
+        options: app.chart.options
+    };
+    window.stats_inp = new Chart(stats_input, config_input); 
   }
 
   var stats_prediction = document.getElementById('statistic-prediction');
   if (stats_prediction) {
-    new Chart(stats_prediction, {
+    var config_prediction = {
       type: "line",
-      data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Data Curah Hujan",
-              data: dataset,
-              fill: false,
-              backgroundColor: "rgba(54, 162, 235, 0.2)",
-              borderColor: "rgba(54, 162, 235, 1)",
-              borderWidth: 3,
-              lineTension: 0.1,
-              pointRadius: 8,
-              pointHoverRadius: 13,
-            },
-            {
-              label: "Data Hasil Perhitungan",
-              data: result,
-              fill: false,            
-              backgroundColor: "rgba(254, 162, 135, 0.2)",
-              borderColor: "rgba(254, 162, 135, 1)",
-              borderWidth: 3,
-              lineTension: 0.1,
-              pointRadius: 8,
-              pointHoverRadius: 13,
-              borderDash: [5, 5],
-            },
-          ]
-      },
-      options: app.chart.options
-    }); 
+        data: {
+            labels: app.adjust(app.data, 'x'),
+            datasets: [
+              {
+                label: "Data Curah Hujan",
+                data: app.adjust(app.data, 'y'),
+                fill: false,
+                backgroundColor: "rgba(54, 162, 235, 0.2)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 3,
+                lineTension: 0.1,
+                pointRadius: 8,
+                pointHoverRadius: 13,
+              },
+              {
+                label: "Data Hasil Perhitungan",
+                data: app.adjust(app.data, 'ya'),
+                fill: false,            
+                backgroundColor: "rgba(254, 162, 135, 0.2)",
+                borderColor: "rgba(254, 162, 135, 1)",
+                borderWidth: 3,
+                lineTension: 0.1,
+                pointRadius: 8,
+                pointHoverRadius: 13,
+                borderDash: [5, 5],
+              },
+              {
+                label: "Data Prediksi Model +N",
+                data: app.prediction,
+                fill: false,            
+                backgroundColor: "rgba(54, 162, 135, 0.2)",
+                borderColor: "rgba(54, 162, 135, 1)",
+                borderWidth: 3,
+                lineTension: 0.1,
+                pointRadius: 8,
+                pointHoverRadius: 13,
+                borderDash: [5, 5],
+              },
+            ]
+        },
+        options: app.chart.options
+    };
+  
+    window.stats_pred =  new Chart(stats_prediction, config_prediction); 
   }
