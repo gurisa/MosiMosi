@@ -133,7 +133,6 @@ var app = new Vue({
 });
 
 
-
 // $(document).ready(function() {
 
   var labels = app.adjust(app.data, 'x');
