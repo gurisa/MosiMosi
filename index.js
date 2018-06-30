@@ -11,31 +11,17 @@ var app = new Vue({
     ],
     menu: 0,
     data: [],
+    total: [],
+    average: [],
     parameter: {
       a: 0,
       b: 0,
+      C: 0,
+      n: 0,
     },
     chart: {},
   },
-  mounted: function() {
-    this.data = [
-      {x: 1, y: 2.175, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 2, y: 3.787, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 3, y: 6.7, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 4, y: 11.711, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 5, y: 20.495, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 6, y: 35.904, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 7, y: 62.789, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 8, y: 109.96, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 9, y: 192.419, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 10, y: 336.75, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 11, y: 589.3, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 12, y: 1031, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 13, y: 1800.95, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 14, y: 3157.987, X: 0, Y: 0, X2: 0, XY: 0},
-      {x: 15, y: 5525.766, X: 0, Y: 0, X2: 0, XY: 0},
-    ]; 
-
+  mounted: function() {    
     this.chart = {
       options: {
         responsive: true,
@@ -72,21 +58,82 @@ var app = new Vue({
         }
       },
     };
-
-  },
-  watch: {
-    total: function(data) {
-      return this.total(data);
-    },
+    
+    this.init();
   },
   methods: {
-    total: function(data) {
-      if (data) {
-        var total = 0;
+    init: function() {
+      
+      this.data = [
+        {x: 1, y: 2.175, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 2, y: 3.787, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 3, y: 6.7, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 4, y: 11.711, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 5, y: 20.495, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 6, y: 35.904, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 7, y: 62.789, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 8, y: 109.96, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 9, y: 192.419, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 10, y: 336.75, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 11, y: 589.3, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 12, y: 1031, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 13, y: 1800.95, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 14, y: 3157.987, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 15, y: 5525.766, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      ]; 
+            
+      this.changeData(this.lnOf(this.adjust(this.data, 'x')), 'X');
+      this.changeData(this.lnOf(this.adjust(this.data, 'y')), 'Y');
+      this.changeData(this.multipleOf(this.adjust(this.data, 'x'), this.adjust(this.data, 'x')), 'X2');
+      this.changeData(this.multipleOf(this.adjust(this.data, 'x'), this.adjust(this.data, 'y')), 'XY');
+  
+      this.parameter = {
+        a: 0,
+        b: 0,
+        C: 0,
+        n: this.data.length,
+      };
+
+      this.total = {
+        x: this.totalOf(this.adjust(this.data, 'x')),
+        y: this.totalOf(this.adjust(this.data, 'y')),
+        X: this.totalOf(this.adjust(this.data, 'X')),
+        Y: this.totalOf(this.adjust(this.data, 'Y')),
+        X2: this.totalOf(this.adjust(this.data, 'X2')),
+        XY: this.totalOf(this.adjust(this.data, 'XY')),
+        ya: this.totalOf(this.adjust(this.data, 'ya')),
+      };
+  
+      this.average = {
+        x: this.averageOf(this.total.x, this.parameter.n),
+        y: this.averageOf(this.total.y, this.parameter.n),
+        X: this.averageOf(this.total.X, this.parameter.n),
+        Y: this.averageOf(this.total.Y, this.parameter.n),
+        X2: this.averageOf(this.total.X2, this.parameter.n),
+        XY: this.averageOf(this.total.XY, this.parameter.n),
+        ya: this.averageOf(this.total.ya, this.parameter.n),
+      };
+
+    },
+    totalOf: function(data) {
+      var total = 0;
+      if (data) {        
         for (var i = 0; i < data.length; i++) {
-          total += data;
-        }
-        return total;
+          total += data[i];
+        }        
+      }
+      return total;
+    },
+    averageOf: function(total, n) {
+      if (total && n) {
+        return total / n;
+      }
+    },
+    changeData: function(data, property) {
+      if (data && property && data.length === this.data.length) {
+        for (var i = 0; i < this.data.length; i++) {
+          this.data[i][property] = data[i];
+        }  
       }
     },
     adjust: function(data, property) {
@@ -123,26 +170,50 @@ var app = new Vue({
       }
       return temp;
     },
+    getA: function(data) {
+      return data;
+    },
+    getB: function(data) {
+      return data;
+    },
+    getC: function(data) {
+      return data;
+    },
+    toFixed: function(value, precision) {
+      var power = Math.pow(10, precision || 0);
+      return String(Math.round(value * power) / power);
+    },
     initStats: function() {
 
     }
   },
-  computed: {
+  watch: {
 
+  },
+  computed: {
+    
   }
 });
 
 
-// $(document).ready(function() {
+$(document).ready(function() {
+  
+  // if ($('#modal-rindu')) {
+  //   $('#modal-rindu').modal({
+  //     keyboard: false,
+  //     focus: false,
+  //     show: true
+  //   });
+  // }
+
+});
 
   var labels = app.adjust(app.data, 'x');
   var dataset = app.adjust(app.data, 'y');
-  var result = dataset;
+  var result = app.adjust(app.data, 'ya');
   
   var X = app.lnOf(labels);
   var Y = app.lnOf(dataset);
-  var X2 = app.sqrOf(X);
-  var XY = app.multipleOf(X, Y);
 
   var stats_input = document.getElementById('statistic-input');
   if (stats_input) {
@@ -179,6 +250,3 @@ var app = new Vue({
       options: app.chart.options
     }); 
   }
- 
-
-// });
