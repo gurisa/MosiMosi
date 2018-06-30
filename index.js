@@ -32,6 +32,14 @@ function adjustLabel(data) {
   return temp;
 }
 
+function regretion(data) {
+  var temp = [];
+  for (var i = 0; i < data.length; i++) {
+    temp[i] = data[i].data + Math.floor((Math.random() * 440) + 1);;
+  }
+  return temp;
+}
+
 function showAnswer(data) {
   for (var i = 1; i <= 6; i++) {
     $('#answer-' + i).hide();
@@ -49,31 +57,73 @@ function initAnswer() {
 $(document).ready(function() {
 
   initAnswer();
-  
+
   var dataset = adjustData(data);
+  var result = regretion(data);
   var labels = adjustLabel(data);
 
   var statistic_input = new Chart(document.getElementById('statistic-input'), {
     type: "line",
     data: {
         labels: labels,
-        datasets: [{
+        datasets: [
+          {
             label: "Data Curah Hujan",
             data: dataset,
             fill: false,
             backgroundColor: "rgba(54, 162, 235, 0.2)",
             borderColor: "rgba(54, 162, 235, 1)",
             borderWidth: 3,
-            lineTension: 0.1
-        }]
+            lineTension: 0.1,
+            pointRadius: 8,
+						pointHoverRadius: 13,
+          },
+          {
+            label: "Data Hasil Perhitungan",
+            data: result,
+            fill: false,            
+            backgroundColor: "rgba(254, 162, 135, 0.2)",
+            borderColor: "rgba(254, 162, 135, 1)",
+            borderWidth: 3,
+            lineTension: 0.1,
+            pointRadius: 8,
+						pointHoverRadius: 13,
+            borderDash: [5, 5],
+          },
+        ]
     },
     options: {
+        responsive: true,
+				title: {
+					display: true,
+					text: 'Grafik Regresi Model Curah Hujan'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+        },
         scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
+          xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Minggu'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Intensitas'
+            },
+            ticks: {
+              beginAtZero:true
+            }
+          }]
         }
     }
   });

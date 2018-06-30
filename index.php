@@ -41,30 +41,6 @@
     <h1 class="text-center mt-3">Curah Hujan</h1>
     <hr>
     <div class="row">
-      <div class="col col-12 col-lg-4 col-md-4 col-sm-12 col-xs-12">
-        <table class="table text-center">
-          <thead>
-            <tr>
-              <th>Minggu</th>
-              <th>Curah Hujan</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach($data as $key => $value) { ?>
-            <tr>
-              <td><?php echo $value->week; ?></td>
-              <td><?php echo $value->data; ?></td>
-            </tr>
-            <?php } ?>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>Minggu</th>
-              <th>Curah Hujan</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
       <div class="col col-12 col-lg-8 col-md-8 col-sm-12 col-xs-12">
         <div class="card text-white bg-dark my-3">
           <div class="card-body">
@@ -170,9 +146,9 @@
 
             <div id="answer-5">
               <div class="row">
-                <div class="col col-12 col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
                   <h5>Jawaban 5</h5>
-                  <canvas id="statistic-input" width="400" height="400"></canvas>
+                  <canvas id="statistic-input" width="800" height="500"></canvas>
                 </div>
               </div>
             </div>
@@ -183,6 +159,31 @@
         </div>
         
       </div>
+      <div class="col col-12 col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <table class="table text-center">
+          <thead>
+            <tr>
+              <th>Minggu</th>
+              <th>Curah Hujan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach($data as $key => $value) { ?>
+            <tr>
+              <td><?php echo $value->week; ?></td>
+              <td><?php echo $value->data; ?></td>
+            </tr>
+            <?php } ?>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Minggu</th>
+              <th>Curah Hujan</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
     </div>
   </div>
 
