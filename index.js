@@ -3,11 +3,11 @@ var app = new Vue({
   data: {
     questions: [
       {'number': '1', 'text': 'Tentukan uraian verifikasi matematis dengan linearisasi untuk pembentukan model tersebut agar metoda regresi linier dapat dilakukan.'},
-      {'number': '2', 'text': 'Bagaimana anda menghitung parameter a dan b dengan metoda regresinya?'},
-      {'number': '3', 'text': 'Berdasarkan pertanyaan 2, tentukan nilai parameter a dan b untuk model tersebut.'},
+      {'number': '2', 'text': 'Bagaimana anda menghitung parameter $a$ dan $b$ dengan metoda regresinya?'},
+      {'number': '3', 'text': 'Berdasarkan pertanyaan 2, tentukan nilai parameter $a$ dan $b$ untuk model tersebut.'},
       {'number': '4', 'text': 'Validasi model yang anda buat dengan menghitung data pengamatan melalui model tersebut'},
       {'number': '5', 'text': 'Gambarkan grafik data pengamatan yang sebenaranya dan grafik data pengamatan model'},
-      {'number': '6', 'text': 'Simulasikan melalui model, untuk memperkirakan data curah hujan (dalam mm3) pada minggu ke 16. Apa pendapat anda tentang data curah hujan di masa-masa yang akan datang menurut model yang anda peroleh tersebut.'}
+      {'number': '6', 'text': 'Simulasikan melalui model, untuk memperkirakan data curah hujan (dalam $mm^3$) pada minggu ke 16. Apa pendapat anda tentang data curah hujan di masa-masa yang akan datang menurut model yang anda peroleh tersebut.'}
     ],
     menu: 0,
     data: [],
@@ -233,6 +233,42 @@ $(document).ready(function() {
   var stats_input = document.getElementById('statistic-input');
   if (stats_input) {
     new Chart(stats_input, {
+      type: "line",
+      data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Data Curah Hujan",
+              data: dataset,
+              fill: false,
+              backgroundColor: "rgba(54, 162, 235, 0.2)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 3,
+              lineTension: 0.1,
+              pointRadius: 8,
+              pointHoverRadius: 13,
+            },
+            {
+              label: "Data Hasil Perhitungan",
+              data: result,
+              fill: false,            
+              backgroundColor: "rgba(254, 162, 135, 0.2)",
+              borderColor: "rgba(254, 162, 135, 1)",
+              borderWidth: 3,
+              lineTension: 0.1,
+              pointRadius: 8,
+              pointHoverRadius: 13,
+              borderDash: [5, 5],
+            },
+          ]
+      },
+      options: app.chart.options
+    }); 
+  }
+
+  var stats_prediction = document.getElementById('statistic-prediction');
+  if (stats_prediction) {
+    new Chart(stats_prediction, {
       type: "line",
       data: {
           labels: labels,
