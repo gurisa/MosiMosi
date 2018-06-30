@@ -84,16 +84,11 @@ var app = new Vue({
       
       this.changeData(this.lnOf(this.adjust(this.data, 'x')), 'X');
       this.changeData(this.lnOf(this.adjust(this.data, 'y')), 'Y');
-      this.changeData(this.multipleOf(this.adjust(this.data, 'x'), this.adjust(this.data, 'x')), 'X2');
-      this.changeData(this.multipleOf(this.adjust(this.data, 'x'), this.adjust(this.data, 'y')), 'XY');
-  
-      this.parameter = {
-        a: 0,
-        b: 0,
-        C: 0,
-        n: this.data.length,
-      };
+      this.changeData(this.multipleOf(this.adjust(this.data, 'X'), this.adjust(this.data, 'X')), 'X2');
+      this.changeData(this.multipleOf(this.adjust(this.data, 'X'), this.adjust(this.data, 'Y')), 'XY');     
 
+      this.parameter.n = this.data.length;
+      
       this.total = {
         x: this.totalOf(this.adjust(this.data, 'x')),
         y: this.totalOf(this.adjust(this.data, 'y')),
@@ -113,6 +108,18 @@ var app = new Vue({
         XY: this.averageOf(this.total.XY, this.parameter.n),
         ya: this.averageOf(this.total.ya, this.parameter.n),
       };
+
+      this.parameter = {
+        a: this.getA(),
+        b: this.getB(),
+        C: this.getC(),
+        n: this.data.length,
+      };
+
+      this.changeData(this.yOf(this.adjust(this.data, 'x'), this.parameter.b, this.parameter.C), 'ya');
+
+      this.total.ya = this.totalOf(this.adjust(this.data, 'ya'));
+      this.average.ya = this.averageOf(this.total.ya, this.parameter.n);
     },
     totalOf: function(data) {
       var total = 0;
@@ -169,14 +176,23 @@ var app = new Vue({
       }
       return temp;
     },
-    getA: function(data) {
-      return data;
+    yOf: function(data, b, c) {
+      var temp = [];
+      if (data && b && c) {
+        for (var i = 0; i < data.length; i++) {
+          temp[i] = c * Math.pow(data[i], b);
+        }
+      }
+      return temp;
     },
-    getB: function(data) {
-      return data;
+    getA: function() {
+      return (this.average.Y - (this.getB() * this.average.X));
     },
-    getC: function(data) {
-      return data;
+    getB: function() {
+      return (((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y)) / ((this.parameter.n * this.total.X2) - (this.total.X * this.total.X)));
+    },
+    getC: function() {
+      return Math.exp(this.getA());
     },
     toFixed: function(value, precision) {
       var power = Math.pow(10, precision || 0);
@@ -190,7 +206,7 @@ var app = new Vue({
 
   },
   computed: {
-    
+
   }
 });
 

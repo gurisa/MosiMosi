@@ -91,7 +91,7 @@
                     <p>Parameter $a$ dan $b$ diperoleh dari hasil perhitungan regresi linear sebagai berikut:</p>
                     <p>
                       $$b = {n\sum_{i=1}^n (X[i] * Y[i]) - \sum_{i=1}^n (X[i]) * \sum_{i=1}^n (Y[i]) \over (n\sum_{i=1}^n (X[i]))^2 - (\sum_{i=1}^n (X[i]))^2)}$$
-                      $$a = {\sum_{i=1}^n (x[i]) \over n} - {\Biggl(b {\sum_{i=1}^n (y[i]) \over n} \Biggr)}  $$
+                      $$a = {\sum_{i=1}^n (y[i]) \over n} - {\Biggl(b {\sum_{i=1}^n (x[i]) \over n} \Biggr)}  $$
                     </p>
                 </div>
               </div>    
@@ -155,15 +155,17 @@
                     <b>Mencari nilai b:</b>
                     <p>       
                       $$b = {n\sum_{i=1}^n (X[i] * Y[i]) - \sum_{i=1}^n (X[i]) * \sum_{i=1}^n (Y[i]) \over (n\sum_{i=1}^n (X[i]))^2 - (\sum_{i=1}^n (X[i]))^2)}$$
-                      $$b = { {{ parameter.n }} \sum({{ toFixed(average.XY, 4) }}) - \sum ({{ toFixed(average.X, 4) }}) * \sum ({{ toFixed(average.Y, 4) }}) \over {{ parameter.n }} \sum ({{ toFixed(average.X2, 4) }}) - \sum ({{ toFixed(average.X, 4) }})^2}$$
-                      $$b = { {{ parameter.n }} \sum({{ toFixed(average.XY, 4) }}) - \sum ({{ toFixed(average.X, 4) }}) * \sum ({{ toFixed(average.Y, 4) }}) \over {{ parameter.n }} \sum ({{ toFixed(average.X2, 4) }}) - \sum ({{ toFixed(average.X, 4) }})^2}$$
+                      $$b = { {{ parameter.n }} \sum({{ toFixed(total.XY, 4) }}) - \sum ({{ toFixed(total.X, 4) }}) * \sum ({{ toFixed(total.Y, 4) }}) \over {{ parameter.n }} \sum ({{ toFixed(total.X2, 4) }}) - \sum ({{ toFixed(total.X, 4) }})^2}$$
+                      $$b = { {{ toFixed(parameter.n * total.XY, 4) }} - {{ toFixed(total.X * total.Y, 4) }} \over {{ toFixed(parameter.n * total.X2, 4) }} - {{ toFixed(total.X * total.X, 4) }} }$$
+                      $$b = { {{ toFixed((parameter.n * total.XY) - (total.X * total.Y), 4) }} \over {{ toFixed((parameter.n * total.X2) - (total.X * total.X), 4) }} }$$
+                      $$b = { {{ toFixed(((parameter.n * total.XY) - (total.X * total.Y)) / ((parameter.n * total.X2) - (total.X * total.X)), 4) }} }$$
                     </p>
                     <b>Mencari nilai a:</b>
                     <p>
-                      $$a = {\sum_{i=1}^n (x[i]) \over n} - {\Biggl( {{ parameter.b }} {\sum_{i=1}^n (y[i]) \over n} \Biggr)}  $$
-                      $$a = {\sum({{ toFixed(total.x, 4) }}) \over {{ parameter.n }} } - {\Biggl( {{ parameter.b }} {\sum ({{ toFixed(total.y, 4) }}) \over {{ parameter.n }} } \Biggr)}  $$
-                      $$a = {{ toFixed(average.x, 4) }} - {\Biggl( {{ parameter.b }} ({{ toFixed(average.y, 4) }}) \Biggr)}  $$
-                      $$a = {{ toFixed(average.x - (parameter.b * average.y), 4)  }} $$
+                      $$a = {\sum_{i=1}^n (y[i]) \over n} - {\Biggl( {{ toFixed(parameter.b, 4) }} {\sum_{i=1}^n (x[i]) \over n} \Biggr)}  $$
+                      $$a = {\sum({{ toFixed(total.y, 4) }}) \over {{ parameter.n }} } - {\Biggl( {{ toFixed(parameter.b, 4) }} {\sum ({{ toFixed(total.x, 4) }}) \over {{ parameter.n }} } \Biggr)}  $$
+                      $$a = {{ toFixed(average.Y, 4) }} - {\Biggl( {{ toFixed(parameter.b, 4) }} ({{ toFixed(average.X, 4) }}) \Biggr)}  $$
+                      $$a = {{ toFixed(average.Y - (parameter.b * average.X), 4)  }} $$
                     </p>
                 </div>
               </div>  
@@ -172,7 +174,7 @@
               <h5>Jawaban 4</h5>
               <div class="row">
                 <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <p>Setelah mendapatkan nilai parameter $a = {{ parameter.a }} $ dan $b = {{ parameter.b }} $ dan model $y = {{ parameter.C }}x^{{ parameter.b }}$ diperoleh data sebagai berikut:</p>
+                    <p>Setelah mendapatkan nilai parameter $a = {{ toFixed(parameter.a, 4) }} $ dan $b = {{ toFixed(parameter.b, 4) }} $ dan model $y = {{ toFixed(parameter.C, 4) }}x^{ {{ toFixed(parameter.b, 4) }} } $ diperoleh data sebagai berikut:</p>
                     <table class="table text-center">
                       <thead>
                         <tr>
@@ -190,18 +192,18 @@
                             <input type="number" class="form-control" v-model.number="item.y">
                           </td>
                           <td>
-                            <input type="number" class="form-control" v-bind:value="item.ya" readonly>
+                            <input type="number" class="form-control" v-bind:value="toFixed(item.ya, 4)" readonly>
                           </td>                       
                         </tr>
                         <tr>
-                          <td>$\sum({{ total.x }})$</td>
-                          <td>$\sum({{ total.y }})$</td>
-                          <td>$\sum({{ total.ya }})$</td>
+                          <td>$\sum({{ toFixed(total.x, 4) }})$</td>
+                          <td>$\sum({{ toFixed(total.y, 4) }})$</td>
+                          <td>$\sum({{ toFixed(total.ya, 4) }})$</td>
                         </tr>
                         <tr>
                           <td>$\bar x({{ toFixed(average.x, 4) }})$</td>
                           <td>$\bar y({{ toFixed(average.y, 4) }})$</td>
-                          <td>$\bar X({{ toFixed(average.ya, 4) }})$</td>
+                          <td>$\bar y'({{ toFixed(average.ya, 4) }})$</td>
                         </tr>
                       </tbody>
                     </table>
