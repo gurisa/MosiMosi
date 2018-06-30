@@ -28,18 +28,17 @@
     );
 
     $question = array(
-      (object) ['number' => 'Pertanyaan 1', 'text' => 'Tentukan uraian verifikasi matematis dengan linearisasi untuk pembentukan model tersebut agar metoda regresi linier dapat dilakukan.'],
-      (object) ['number' => 'Pertanyaan 2', 'text' => 'Bagaimana anda menghitung parameter a dan b dengan metoda regresinya?'],
-      (object) ['number' => 'Pertanyaan 3', 'text' => 'Berdasarkan pertanyaan 2, tentukan nilai parameter a dan b untuk model tersebut.'],
-      (object) ['number' => 'Pertanyaan 4', 'text' => 'Validasi model yang anda buat dengan menghitung data pengamatan melalui model tersebut'],
-      (object) ['number' => 'Pertanyaan 5', 'text' => 'Gambarkan grafik data pengamatan yang sebenaranya dan grafik data pengamatan model'],
-      (object) ['number' => 'Pertanyaan 6', 'text' => 'Simulasikan melalui model, untuk memperkirakan data curah hujan (dalam mm3) pada minggu ke 16. Apa pendapat anda tentang data curah hujan di masa-masa yang akan datang menurut model yang anda peroleh tersebut.'],
+      (object) ['number' => '1', 'text' => 'Tentukan uraian verifikasi matematis dengan linearisasi untuk pembentukan model tersebut agar metoda regresi linier dapat dilakukan.'],
+      (object) ['number' => '2', 'text' => 'Bagaimana anda menghitung parameter a dan b dengan metoda regresinya?'],
+      (object) ['number' => '3', 'text' => 'Berdasarkan pertanyaan 2, tentukan nilai parameter a dan b untuk model tersebut.'],
+      (object) ['number' => '4', 'text' => 'Validasi model yang anda buat dengan menghitung data pengamatan melalui model tersebut'],
+      (object) ['number' => '5', 'text' => 'Gambarkan grafik data pengamatan yang sebenaranya dan grafik data pengamatan model'],
+      (object) ['number' => '6', 'text' => 'Simulasikan melalui model, untuk memperkirakan data curah hujan (dalam mm3) pada minggu ke 16. Apa pendapat anda tentang data curah hujan di masa-masa yang akan datang menurut model yang anda peroleh tersebut.'],
     );
   ?>
 
   <div class="container">
-    <hr>
-    <h1 class="text-center">Curah Hujan</h1>
+    <h1 class="text-center mt-3">Curah Hujan</h1>
     <hr>
     <div class="row">
       <div class="col col-12 col-lg-4 col-md-4 col-sm-12 col-xs-12">
@@ -67,7 +66,7 @@
         </table>
       </div>
       <div class="col col-12 col-lg-8 col-md-8 col-sm-12 col-xs-12">
-        <div class="card text-white bg-dark">
+        <div class="card text-white bg-dark my-3">
           <div class="card-body">
             <h5 class="card-title">Petunjuk</h5>
             <p class="card-text">
@@ -76,36 +75,78 @@
             </p>
           </div>
         </div>
-        <hr>
 
-        <div class="accordion" id="question">
+        <nav>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <?php foreach($question as $key => $value) { ?>
+            <a class="nav-item nav-link <?php echo ($key == 0) ? 'active' : ''; ?>" id="<?php echo 'nav-tab-' . $key; ?>" data-toggle="tab" href="<?php echo '#tab-' . $key; ?>" role="tab" aria-controls="<?php echo 'tab-' . $key; ?>" aria-selected="true">
+              <?php echo $value->number; ?>
+            </a>
+            <?php } ?>
+          </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
           <?php foreach($question as $key => $value) { ?>
-          <div class="card">
-            <div class="card-header" id="<?php echo 'heading-' . $key; ?>">
-              <h5 class="mb-0">
-                <button class="btn " type="button" data-toggle="collapse" data-target="<?php echo '#data-' . $key; ?>" aria-expanded="true" aria-controls="<?php echo 'data-' . $key; ?>">
-                  Lihat <?php echo $value->number; ?>
-                </button>
-              </h5>
-            </div>
-
-            <div id="<?php echo 'data-' . $key; ?>" class="collapse <?php echo ($key == 0 ) ? 'show' : ''; ?>" aria-labelledby="<?php echo 'heading-' . $key; ?>" data-parent="#question">
+          <div class="tab-pane fade <?php echo ($key == 0) ? 'show active' : ''; ?>" id="<?php echo 'tab-' . $key; ?>" role="tabpanel" aria-labelledby="<?php echo 'nav-tab-' . $key; ?>">
+            <div class="card">
               <div class="card-body">
-                <!-- <h5 class="card-title"><?php echo $value->number; ?></h5> -->
+                <h5 class="card-title"><?php echo 'Pertanyaan ' . $value->number; ?></h5>
                 <p class="card-text"><?php echo $value->text; ?></p>
-                <button class="btn btn-primary">Lihat Jawaban</button>
+                <a href="#" class="btn btn-primary">Lihat Jawaban</a>
               </div>
-            </div>
+            </div>                            
           </div>
           <?php } ?>
         </div>
 
+        <div class="card my-3">
+          <div class="card-body">
+            <div id="answer-1">
+
+            </div>
+            <div id="answer-2">
+
+            </div>
+            <div id="answer-3">
+
+            </div>
+            <div id="answer-4">
+
+            </div>
+
+            <div id="answer-5">
+              <div class="row">
+                <div class="col col-12 col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                  <canvas id="statistic-input" width="400" height="400"></canvas>
+                </div>
+              </div>
+            </div>
+            <div id="answer-6">
+
+            </div>
+          </div>
+        </div>
+        
       </div>
     </div>
   </div>
-  
-  <script src="assets/js/jquery.min.js" type="text/javascript"></script>
+
+  <footer class="pt-4 my-md-4 pt-md-4 border-top">
+    <div class="container">
+      <div class="row">
+        <div class="col col-12 col-lg-5 col-md-6 col-sm-12 pull-left text-left">
+          <strong>Copyright © Gurisa.Com <?php echo date('Y'); ?> all right reserved</strong>
+        </div>
+        <div class="col col-12 col-lg-7 col-md-6 col-sm-12 pull-right text-right">
+          <a class="" style="margin: 0 4px;" href="#">Raka Suryaardi Widjaja</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/jquery.min.js" type="text/javascript"></script>  
   <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="assets/js/chart.min.js" type="text/javascript"></script>
   <script src="index.js" type="text/javascript"></script>
 </body>
 </html>
