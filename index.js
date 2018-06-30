@@ -32,7 +32,24 @@ function adjustLabel(data) {
   return temp;
 }
 
+function showAnswer(data) {
+  for (var i = 1; i <= 6; i++) {
+    $('#answer-' + i).hide();
+  }
+  $('#answer-' + data).show();
+}
+
+function initAnswer() {
+  for (var i = 1; i <= 6; i++) {
+    $('#answer-' + i).hide();
+  }
+  $('#answer-1').show();
+}
+
 $(document).ready(function() {
+
+  initAnswer();
+  
   var dataset = adjustData(data);
   var labels = adjustLabel(data);
 

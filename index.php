@@ -42,7 +42,7 @@
     <hr>
     <div class="row">
       <div class="col col-12 col-lg-4 col-md-4 col-sm-12 col-xs-12">
-        <table class="table">
+        <table class="table text-center">
           <thead>
             <tr>
               <th>Minggu</th>
@@ -79,7 +79,7 @@
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <?php foreach($question as $key => $value) { ?>
-            <a class="nav-item nav-link <?php echo ($key == 0) ? 'active' : ''; ?>" id="<?php echo 'nav-tab-' . $key; ?>" data-toggle="tab" href="<?php echo '#tab-' . $key; ?>" role="tab" aria-controls="<?php echo 'tab-' . $key; ?>" aria-selected="true">
+            <a class="nav-item nav-link <?php echo ($key == 0) ? 'active' : ''; ?>" id="<?php echo 'nav-tab-' . $key; ?>" data-toggle="tab" href="<?php echo '#tab-' . $key; ?>" role="tab" aria-controls="<?php echo 'tab-' . $key; ?>" aria-selected="true" onclick="showAnswer(<?php echo $key + 1;?>);">
               <?php echo $value->number; ?>
             </a>
             <?php } ?>
@@ -92,7 +92,7 @@
               <div class="card-body">
                 <h5 class="card-title"><?php echo 'Pertanyaan ' . $value->number; ?></h5>
                 <p class="card-text"><?php echo $value->text; ?></p>
-                <a href="#" class="btn btn-primary">Lihat Jawaban</a>
+                <button class="btn btn-primary" onclick="showAnswer(<?php echo $key + 1;?>);">Lihat Jawaban</button>
               </div>
             </div>                            
           </div>
@@ -102,13 +102,67 @@
         <div class="card my-3">
           <div class="card-body">
             <div id="answer-1">
-
+              <h5>Jawaban 1</h5>
+              <div class="row">
+                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <p>Karena sebelumnya sudah diketahui bahwa data memiliki kecenderungan berbentuk y = ab^x maka metode linearisasi yang digunakan adalah <b>Linearisasi Pangkat Sederhana</b>.</p>
+                    <p>Persamaan y = ab^x selanjutnya akan diubahsuaikan dengan persamaan y = Cx^b</p>
+                    <p><b>Langkah melakukan Linearisasi Pangkat Sederhana</b></p>
+                    <p>
+                      <ol>
+                        <li>Menyesuaikan data dengan fungsi y = Cx^b</li>
+                        <li>
+                          Mendefinisikan nilai dari masing-masing parameter: Y = a + bX <br>
+                          Y = ln(y), <br> a = ln(C), <br> X = ln(x)
+                        </li>
+                        <li><i>Mendefinisikan nilai x[i] dan y[i] (sudah diketahui dari tabel)</i></li>
+                        <li>
+                          <b>Mencari nilai:</b> <br> 
+                          X[i] = ln(x[i]), <br>
+                          Y[i] = ln(y[i]), <br>
+                          (X[i])^2, dan (X[i] * Y[i])<br>
+                          <b>Serta memperoleh hasil perhitungan:</b> <br>
+                          ∑(X[i]), ∑(Y[i]), ∑((X[i])^2), dan ∑(X[i] * Y[i])
+                        </li>
+                        <li>
+                          Lakukan penyesuaian data yang sebelumnya bukan merupakan data linear dengan menggunakan sistem persamaan linear: <br>
+                          (n * a) + (∑(X[i]) * b) = ∑(Y[i]) <br>
+                          (∑(X[i]) * a) + ((∑(X[i]))^2 * b) = ∑(X[i] * Y[i]) <br> <br>
+                          <i>n = jumlah data, <br> a dan b = parameter yang dicari</i>
+                        </li>
+                        <li>Setelah dilakukan perhitungan diperoleh nilai parameter a dan b.</li>
+                        <li>
+                          Cari nilai C melalui persamaan C = e^a <br> 
+                          <i>e = 2.718281828 (konstanta e)</i>
+                        </li>
+                        <li>Model akan diperoleh melalui persamaan: y = C*(x^b)</li>
+                      </ol>
+                    </p>
+                </div>
+              </div>              
             </div>
             <div id="answer-2">
-
+              <h5>Jawaban 2</h5>
+              <div class="row">
+                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <p>Parameter a dan b diperoleh dari hasil perhitungan regresi linear sebagai berikut:</p>
+                    <p>
+                      b = (n∑(X[i] * Y[i]) - ∑(X[i]) * ∑(Y[i])) / (n∑(X[i]))^2 - (∑(X[i]))^2) <br>
+                      a = (∑(x[i]) / n) - b(∑(y[i]) / n)
+                    </p>
+                </div>
+              </div>    
             </div>
             <div id="answer-3">
+              <h5>Jawaban 3</h5>
+              <div class="row">
+                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <p>Berdasarkan rumusan pada point 2, nilai a dan b untuk data pada tabel dapat diketahui yakni:</p>
+                    <p>
 
+                    </p>
+                </div>
+              </div>  
             </div>
             <div id="answer-4">
 
@@ -117,6 +171,7 @@
             <div id="answer-5">
               <div class="row">
                 <div class="col col-12 col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                  <h5>Jawaban 5</h5>
                   <canvas id="statistic-input" width="400" height="400"></canvas>
                 </div>
               </div>
