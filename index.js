@@ -59,29 +59,29 @@ var app = new Vue({
       },
     };
     
-    this.init();
+    this.data = [
+      {x: 1, y: 2.175, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 2, y: 3.787, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 3, y: 6.7, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 4, y: 11.711, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 5, y: 20.495, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 6, y: 35.904, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 7, y: 62.789, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 8, y: 109.96, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 9, y: 192.419, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 10, y: 336.75, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 11, y: 589.3, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 12, y: 1031, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 13, y: 1800.95, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 14, y: 3157.987, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      {x: 15, y: 5525.766, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+    ]; 
+    
+    this.reInit();
   },
   methods: {
-    init: function() {
+    reInit: function() {
       
-      this.data = [
-        {x: 1, y: 2.175, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 2, y: 3.787, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 3, y: 6.7, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 4, y: 11.711, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 5, y: 20.495, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 6, y: 35.904, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 7, y: 62.789, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 8, y: 109.96, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 9, y: 192.419, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 10, y: 336.75, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 11, y: 589.3, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 12, y: 1031, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 13, y: 1800.95, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 14, y: 3157.987, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-        {x: 15, y: 5525.766, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      ]; 
-            
       this.changeData(this.lnOf(this.adjust(this.data, 'x')), 'X');
       this.changeData(this.lnOf(this.adjust(this.data, 'y')), 'Y');
       this.changeData(this.multipleOf(this.adjust(this.data, 'x'), this.adjust(this.data, 'x')), 'X2');
@@ -113,7 +113,6 @@ var app = new Vue({
         XY: this.averageOf(this.total.XY, this.parameter.n),
         ya: this.averageOf(this.total.ya, this.parameter.n),
       };
-
     },
     totalOf: function(data) {
       var total = 0;

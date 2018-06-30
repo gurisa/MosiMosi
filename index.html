@@ -18,7 +18,7 @@
             <h5 class="card-title">Petunjuk</h5>
             <p class="card-text">
               Hasil pengamatan 15 minggu pertama terhadap curah hujan di suatu wilayah diperoleh data seperti yang tetulis pada tabel. 
-              Jika suatu pemodelan matematis dari data pengamatan tersebut ada kecenderungan berbentuk y = (a*b)^x dengan a, b adalah parameter data pengamatan, dan x, y adalah variable data pengamatan.
+              Jika suatu pemodelan matematis dari data pengamatan tersebut ada kecenderungan berbentuk $y = ab^x$ dengan $a$, $b$ adalah parameter data pengamatan, dan $x$, $y$ adalah variable data pengamatan.
             </p>
           </div>
         </div>
@@ -56,7 +56,7 @@
                         <li>Menyesuaikan data dengan fungsi $y = Cx^b$</li>
                         <li>
                           Mendefinisikan nilai dari masing-masing parameter: $Y = a + bX$<br>
-                          $Y = ln(y)$, <br> $a = ln(C)$, <br> $X = ln(x)$
+                          $Y = \ln(y)$, <br> $a = \ln(C)$, <br> $X = \ln(x)$
                         </li>
                         <li><i>Mendefinisikan nilai $x[i]$ dan $y[i]$ (sudah diketahui dari tabel)</i></li>
                         <li>
@@ -134,12 +134,12 @@
                           </td>                          
                         </tr>
                         <tr>
-                          <td>$\sum_{i=1}^n({{ toFixed(total.x, 4) }})$</td>
-                          <td>$\sum_{i=1}^n({{ toFixed(total.y, 4) }})$</td>
-                          <td>$\sum_{i=1}^n({{ toFixed(total.X, 4) }})$</td>
-                          <td>$\sum_{i=1}^n({{ toFixed(total.Y, 4) }})$</td>
-                          <td>$\sum_{i=1}^n({{ toFixed(total.X2, 4) }})$</td>
-                          <td>$\sum_{i=1}^n({{ toFixed(total.XY, 4) }})$</td>
+                          <td>$\sum({{ toFixed(total.x, 4) }})$</td>
+                          <td>$\sum({{ toFixed(total.y, 4) }})$</td>
+                          <td>$\sum({{ toFixed(total.X, 4) }})$</td>
+                          <td>$\sum({{ toFixed(total.Y, 4) }})$</td>
+                          <td>$\sum({{ toFixed(total.X2, 4) }})$</td>
+                          <td>$\sum({{ toFixed(total.XY, 4) }})$</td>
                         </tr>
                         <tr>
                           <td>$\bar x({{ toFixed(average.x, 4) }})$</td>
@@ -152,9 +152,18 @@
                       </tbody>
                     </table>
                     <hr>
+                    <b>Mencari nilai b:</b>
+                    <p>       
+                      $$b = {n\sum_{i=1}^n (X[i] * Y[i]) - \sum_{i=1}^n (X[i]) * \sum_{i=1}^n (Y[i]) \over (n\sum_{i=1}^n (X[i]))^2 - (\sum_{i=1}^n (X[i]))^2)}$$
+                      $$b = { {{ parameter.n }} \sum({{ toFixed(average.XY, 4) }}) - \sum ({{ toFixed(average.X, 4) }}) * \sum ({{ toFixed(average.Y, 4) }}) \over {{ parameter.n }} \sum ({{ toFixed(average.X2, 4) }}) - \sum ({{ toFixed(average.X, 4) }})^2}$$
+                      $$b = { {{ parameter.n }} \sum({{ toFixed(average.XY, 4) }}) - \sum ({{ toFixed(average.X, 4) }}) * \sum ({{ toFixed(average.Y, 4) }}) \over {{ parameter.n }} \sum ({{ toFixed(average.X2, 4) }}) - \sum ({{ toFixed(average.X, 4) }})^2}$$
+                    </p>
+                    <b>Mencari nilai a:</b>
                     <p>
-                        $$b = {n\sum_{i=1}^n(X[i] * Y[i]) - \sum_{i=1}^n(X[i]) * \sum_{i=1}^n(Y[i]) \over (n\sum_{i=1}^n(X[i]))^2 - (\sum_{i=1}^n(X[i]))^2)}$$ <br>
-                        $$a = {\sum_{i=1}^n(x[i]) \over n} - {(b {\sum_{i=1}^n(y[i]) \over n} )}  $$
+                      $$a = {\sum_{i=1}^n (x[i]) \over n} - {\Biggl( {{ parameter.b }} {\sum_{i=1}^n (y[i]) \over n} \Biggr)}  $$
+                      $$a = {\sum({{ toFixed(total.x, 4) }}) \over {{ parameter.n }} } - {\Biggl( {{ parameter.b }} {\sum ({{ toFixed(total.y, 4) }}) \over {{ parameter.n }} } \Biggr)}  $$
+                      $$a = {{ toFixed(average.x, 4) }} - {\Biggl( {{ parameter.b }} ({{ toFixed(average.y, 4) }}) \Biggr)}  $$
+                      $$a = {{ toFixed(average.x - (parameter.b * average.y), 4)  }} $$
                     </p>
                 </div>
               </div>  
@@ -185,23 +194,16 @@
                           </td>                       
                         </tr>
                         <tr>
-                          <td>$∑({{ total.x }})$</td>
-                          <td>$∑({{ total.y }})$</td>
-                          <td>$∑({{ total.ya }})$</td>
+                          <td>$\sum({{ total.x }})$</td>
+                          <td>$\sum({{ total.y }})$</td>
+                          <td>$\sum({{ total.ya }})$</td>
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <td>$\bar x({{ toFixed(average.x, 4) }})$</td>
+                          <td>$\bar y({{ toFixed(average.y, 4) }})$</td>
+                          <td>$\bar X({{ toFixed(average.ya, 4) }})$</td>
                         </tr>
                       </tbody>
-                      <tfoot>
-                        <tr>
-                          <th>$x[i]$</th>
-                          <th>$y[i]$</th>
-                          <th>$y'[i]$</th>
-                        </tr>
-                      </tfoot>
                     </table>
                     <p>
 
