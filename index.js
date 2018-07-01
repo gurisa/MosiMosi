@@ -78,6 +78,8 @@ var app = new Vue({
     this.initChartInput();
 
     this.callback = true;
+
+    this.rain();
   },
   methods: {
     reInit: function() {
@@ -367,6 +369,9 @@ var app = new Vue({
       this.chart.config.prediction.data.datasets[2].data = this.prediction;
       this.chart.object.prediction.update();
     },
+    rain: function(amount = 100) {
+      
+    },
   },
   watch: {
 
@@ -384,5 +389,22 @@ document.onreadystatechange = function () {
   }
 }
 
+$(document).snowfall({
+  image : "assets/images/water.png",
+  round : true, 
+  shadow: true,
+  minSize: 5, 
+  maxSize: 8,
+  minSpeed: 5,
+  maxSpeed: 10,
+  flakeColor: '#ecf0f1',
+  flakeCount : 10,
+  flakeIndex: 0,
+  // collection : ".snow-container",   
+});
+
+$("#clear").click(function(){
+  $(document).snowfall('clear');
+});
 
 
