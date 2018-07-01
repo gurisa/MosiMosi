@@ -33,13 +33,24 @@ var app = new Vue({
       },
     },
   },
-  mounted: function() {    
+  mounted: function() {  
+
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+
     this.chart = {
       options: {
+        legend: {
+          labels: {
+            fontColor: '#34495e',
+          }
+        },
         responsive: true,
         title: {
           display: true,
-          text: 'Grafik Regresi Model Curah Hujan'
+          text: 'Grafik Regresi Model Curah Hujan',
+          fontColor: '#34495e',
         },
         tooltips: {
           mode: 'index',
@@ -54,17 +65,28 @@ var app = new Vue({
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Minggu'
+              labelString: 'Minggu',
+              fontColor: '#34495e',
+            },
+            ticks: {
+              fontColor: '#34495e',
+              // fontSize: 18,
+              // stepSize: 1,
+              beginAtZero: true,
             }
           }],
           yAxes: [{
             display: true,
             scaleLabel: {
               display: true,
-              labelString: 'Intensitas'
+              labelString: 'Intensitas (mm3)',
+              fontColor: '#34495e',
             },
             ticks: {
-              beginAtZero:true
+              fontColor: '#34495e',
+              // fontSize: 18,
+              // stepSize: 1,
+              beginAtZero: true,
             }
           }]
         }
@@ -183,6 +205,7 @@ var app = new Vue({
         this.updateChartInput();
         this.updateChartPrediction();
       }
+      
     },
     setDefault: function() {
       this.data = [
@@ -406,35 +429,49 @@ var app = new Vue({
       this.chart.config.input.data.labels = this.adjust(this.data, 'x');
       this.chart.config.input.data.datasets[0].data = this.adjust(this.data, 'y');
       this.chart.config.input.data.datasets[1].data = this.adjust(this.data, 'ya');
-      this.chart.object.input.update();
+      this.chart.object.input.update();      
     },
     updateChartPrediction: function() {
       this.chart.config.prediction.data.labels = this.adjust(this.data, 'x');
       this.chart.config.prediction.data.datasets[0].data = this.adjust(this.data, 'y');
-      this.chart.config.prediction.data.datasets[1].data = this.adjust(this.data, 'ya');
+      this.chart.config.prediction.data.datasets[1].data = this.adjust(this.data, 'ya');      
       this.chart.config.prediction.data.datasets[2].data = this.prediction;
-      this.chart.object.prediction.update();
+      this.chart.object.prediction.update();      
     },
     rain: function(amount = 0) {
       this.config.snowfall.minSize = (amount * 1) + 7;
       this.config.snowfall.maxSize = (amount * 1) + 20;
       this.config.snowfall.minSpeed = (amount * 4) + 3;
       this.config.snowfall.maxSpeed = (amount * 1) + 15;
-      this.config.snowfall.flakeCount = (amount * 20) + 10;    
+      this.config.snowfall.flakeCount = (amount * 20) + 10;
+      this.config.snowfall.image = (amount <= 3) ? "assets/images/water.png" : "assets/images/flake.png";
     },
     float: function(amount = 0) {
-      this.config.raindrops.canvasHeight = (amount * 60) + 20;
+      this.config.raindrops.canvasHeight = (amount * 40) + 20;
       this.config.raindrops.waveLength = (amount * 5) + 100;
       this.config.raindrops.waveHeight = (amount * 30) + 20;
       this.config.raindrops.density = (amount * 0.001) + 0.005;
       this.config.raindrops.frequency = (amount * 10) + 10;
       this.config.raindrops.rippleSpeed = (amount * 0.01) + 0.01;
-      // canvasHeight: 20, //tinggi air
-      // waveLength: 100, //panjang gelombang
-      // waveHeight: 20, //tinggi gelombang
-      // density: 0.005, //jarak antar tiap tetes air
-      // frequency: 10, //jumlah air menetes
-      // rippleSpeed: 0.01, //kecepatan tetes air
+      var color = {
+        r: (52 + (amount * 30)),
+        g: (152 + (amount * 15)),
+        b: (219 + (amount * 3)),
+      };
+      this.config.raindrops.color = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+            
+      if (amount > 3) {
+        this.config.raindrops.canvasHeight = ((amount - 3) * 40) + 20;
+        this.config.raindrops.waveLength = ((amount - 3) * 5) + 100;
+        this.config.raindrops.waveHeight = ((amount - 3) * 5) + 20;
+        this.config.raindrops.density = ((amount - 3) * 0.1) + 0.005;
+        this.config.raindrops.frequency = ((amount - 3) * 5) + 10;
+        this.config.raindrops.rippleSpeed = ((amount  - 5) * 0.005) + 0.01;
+        this.nightMode();
+      }
+      else {
+        this.normalMode();
+      }
     },
     playButton: function() {
       this.rain(this.menu);
@@ -448,15 +485,46 @@ var app = new Vue({
       this.config.buttons.play.active = !this.config.buttons.play.active;
       this.config.buttons.stop.active = !this.config.buttons.stop.active;
     },
-    stopButton: function() {
+    stopButton: function() {      
       this.rain(this.menu);
       this.float(this.menu);
       $('.raindrops').hide();
       $(document).snowfall('clear');
-      
+      this.normalMode();
+
       this.config.buttons.play.active = !this.config.buttons.play.active;
       this.config.buttons.stop.active = !this.config.buttons.stop.active;
-    }
+    },
+    normalMode: function() {
+      this.chart.config.input.options.title.fontColor = '#34495e';
+      this.chart.config.input.options.legend.labels.fontColor = '#34495e'
+      this.chart.config.input.options.scales.xAxes[0].ticks.fontColor = '#34495e';
+      this.chart.config.input.options.scales.yAxes[0].ticks.fontColor = '#34495e';
+      this.chart.config.input.options.scales.xAxes[0].scaleLabel.fontColor = '#34495e';
+      this.chart.config.input.options.scales.yAxes[0].scaleLabel.fontColor = '#34495e';
+
+      $('#container').removeClass('night');      
+      this.updateChartInput();
+      this.updateChartPrediction();
+    },
+    nightMode: function() {
+      this.chart.config.input.options.title.fontColor = '#ecf0f1';
+      this.chart.config.input.options.legend.labels.fontColor = '#ecf0f1'
+      this.chart.config.input.options.scales.xAxes[0].ticks.fontColor = '#ecf0f1';
+      this.chart.config.input.options.scales.yAxes[0].ticks.fontColor = '#ecf0f1';
+      this.chart.config.input.options.scales.xAxes[0].scaleLabel.fontColor = '#ecf0f1';
+      this.chart.config.input.options.scales.yAxes[0].scaleLabel.fontColor = '#ecf0f1';
+
+      $('#container').addClass('night');      
+      this.updateChartInput();
+      this.updateChartPrediction();
+    },
+    showSingle: function() {
+
+    },
+    showSingleEquation: function() {
+
+    },
   },
   watch: {
     menu: function(newVal, oldVal) {
