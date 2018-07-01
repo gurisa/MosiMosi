@@ -94,6 +94,9 @@ var app = new Vue({
         // collection : ".snow-container",   
       },
       raindrops: {
+        position: 'fixed',
+        positionBottom: 0,
+        positionLeft: 0,
         color: '#2e86de',
         canvasHeight: 20, //tinggi air
         waveLength: 100, //panjang gelombang
@@ -420,7 +423,7 @@ var app = new Vue({
       this.config.snowfall.flakeCount = (amount * 20) + 10;    
     },
     float: function(amount = 0) {
-      this.config.raindrops.canvasHeight = (amount * 10) + 20;
+      this.config.raindrops.canvasHeight = (amount * 60) + 20;
       this.config.raindrops.waveLength = (amount * 5) + 100;
       this.config.raindrops.waveHeight = (amount * 30) + 20;
       this.config.raindrops.density = (amount * 0.001) + 0.005;
@@ -453,7 +456,7 @@ var app = new Vue({
       
       this.config.buttons.play.active = !this.config.buttons.play.active;
       this.config.buttons.stop.active = !this.config.buttons.stop.active;
-    },
+    }
   },
   watch: {
     menu: function(newVal, oldVal) {
@@ -463,9 +466,9 @@ var app = new Vue({
         
         $(document).snowfall('clear');
         $(document).snowfall(this.config.snowfall);
-        
+
         $('.raindrops').remove();
-        $('#container').append('<div class="raindrops">&nbsp;</div>');
+        $('#container').append('<div class="raindrops" style="z-index: 10;">&nbsp;</div>');
         $('.raindrops').raindrops(this.config.raindrops);
       }
     }
