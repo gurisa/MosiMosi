@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
   <title>Curah Hujan - Modelling & Simulation</title>
 </head>
-<body>
+<body id="container">
   <div class="container" id="app">
     <h1 class="text-center mt-3">Curah<strike style="color: gray;">an Hati</strike> Hujan</h1>
     <hr>
@@ -28,8 +28,8 @@
           <div class="card-body">
             <div class="buttons">          
               <button class="btn btn-warning" v-on:click="setDefault(); updateChartInput(); updateChartPrediction();">Default</button>
-              <button class="btn btn-danger" v-on:click="stop();">Stop</button>
-              <button class="btn btn-primary" v-on:click="play();">Play</button>          
+              <button class="btn btn-danger" v-bind:class="{ 'active' : config.buttons.stop.active }" v-on:click="stopButton();" v-if="config.buttons.play.active">{{ config.buttons.stop.label }}</button>
+              <button class="btn btn-primary" v-bind:class="{ 'active' : config.buttons.play.active }" v-on:click="playButton();" v-if="!config.buttons.play.active">{{ config.buttons.play.label }}</button>          
             </div>
           </div>
         </div>

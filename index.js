@@ -24,7 +24,14 @@ var app = new Vue({
     },
     chart: {},
     callback: false,
-    config: {},
+    config: {
+      snowfall: {},
+      raindrops: {},
+      buttons: {
+        stop: {},
+        play: {},
+      },
+    },
   },
   mounted: function() {    
     this.chart = {
@@ -76,11 +83,11 @@ var app = new Vue({
       snowfall: {
         image : "assets/images/water.png",
         round : false, 
-        shadow: true,
-        minSize: 5, 
-        maxSize: 8,
-        minSpeed: 5,
-        maxSpeed: 10,
+        shadow: false,
+        minSize: 7, 
+        maxSize: 20,
+        minSpeed: 3,
+        maxSpeed: 15,
         flakeColor: '#ecf0f1',
         flakeCount : 10,
         flakeIndex: 0,
@@ -88,14 +95,23 @@ var app = new Vue({
       },
       raindrops: {
         color: '#2e86de',
-        canvasHeight: 50, //tinggi air
+        canvasHeight: 20, //tinggi air
         waveLength: 100, //panjang gelombang
-        waveHeight: 50, //tinggi gelombang
+        waveHeight: 20, //tinggi gelombang
         density: 0.005, //jarak antar tiap tetes air
         frequency: 10, //jumlah air menetes
         rippleSpeed: 0.01, //kecepatan tetes air
       },
-      buttons: {},
+      buttons: {
+        stop: {
+          active: false,
+          label: 'Stop',
+        },
+        play: {
+          active: false,
+          label: 'Play',
+        },
+      },
     };
 
     this.setDefault();
@@ -396,23 +412,62 @@ var app = new Vue({
       this.chart.config.prediction.data.datasets[2].data = this.prediction;
       this.chart.object.prediction.update();
     },
-    rain: function(amount = 100) {
-      
+    rain: function(amount = 0) {
+      this.config.snowfall.minSize = (amount * 1) + 7;
+      this.config.snowfall.maxSize = (amount * 1) + 20;
+      this.config.snowfall.minSpeed = (amount * 4) + 3;
+      this.config.snowfall.maxSpeed = (amount * 1) + 15;
+      this.config.snowfall.flakeCount = (amount * 20) + 10;    
     },
-    float: function(amount = 100) {
-
+    float: function(amount = 0) {
+      this.config.raindrops.canvasHeight = (amount * 10) + 20;
+      this.config.raindrops.waveLength = (amount * 5) + 100;
+      this.config.raindrops.waveHeight = (amount * 30) + 20;
+      this.config.raindrops.density = (amount * 0.001) + 0.005;
+      this.config.raindrops.frequency = (amount * 10) + 10;
+      this.config.raindrops.rippleSpeed = (amount * 0.01) + 0.01;
+      // canvasHeight: 20, //tinggi air
+      // waveLength: 100, //panjang gelombang
+      // waveHeight: 20, //tinggi gelombang
+      // density: 0.005, //jarak antar tiap tetes air
+      // frequency: 10, //jumlah air menetes
+      // rippleSpeed: 0.01, //kecepatan tetes air
     },
-    play: function() {
-      $(document).snowfall(app.config.snowfall);
-      $('.raindrops').raindrops(app.config.raindrops);  
-    },
-    stop: function() {
+    playButton: function() {
+      this.rain(this.menu);
+      this.float(this.menu);
       $(document).snowfall('clear');
-    }
+      $(document).snowfall(this.config.snowfall);
+      
+      $('.raindrops').raindrops(this.config.raindrops);
+      $('.raindrops').show();
+      
+      this.config.buttons.play.active = !this.config.buttons.play.active;
+      this.config.buttons.stop.active = !this.config.buttons.stop.active;
+    },
+    stopButton: function() {
+      this.rain(this.menu);
+      this.float(this.menu);
+      $('.raindrops').hide();
+      $(document).snowfall('clear');
+      
+      this.config.buttons.play.active = !this.config.buttons.play.active;
+      this.config.buttons.stop.active = !this.config.buttons.stop.active;
+    },
   },
   watch: {
     menu: function(newVal, oldVal) {
-
+      if (this.config.buttons.play.active) {
+        this.rain(newVal);
+        this.float(newVal);
+        
+        $(document).snowfall('clear');
+        $(document).snowfall(this.config.snowfall);
+        
+        $('.raindrops').remove();
+        $('#container').append('<div class="raindrops">&nbsp;</div>');
+        $('.raindrops').raindrops(this.config.raindrops);
+      }
     }
   },
   computed: {
