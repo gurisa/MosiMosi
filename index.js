@@ -503,6 +503,13 @@ var app = new Vue({
       this.chart.config.input.options.scales.xAxes[0].scaleLabel.fontColor = '#34495e';
       this.chart.config.input.options.scales.yAxes[0].scaleLabel.fontColor = '#34495e';
 
+      this.chart.config.prediction.options.title.fontColor = '#34495e';
+      this.chart.config.prediction.options.legend.labels.fontColor = '#34495e'
+      this.chart.config.prediction.options.scales.xAxes[0].ticks.fontColor = '#34495e';
+      this.chart.config.prediction.options.scales.yAxes[0].ticks.fontColor = '#34495e';
+      this.chart.config.prediction.options.scales.xAxes[0].scaleLabel.fontColor = '#34495e';
+      this.chart.config.prediction.options.scales.yAxes[0].scaleLabel.fontColor = '#34495e';
+
       $('#container').removeClass('night');      
       this.updateChartInput();
       this.updateChartPrediction();
@@ -514,6 +521,13 @@ var app = new Vue({
       this.chart.config.input.options.scales.yAxes[0].ticks.fontColor = '#ecf0f1';
       this.chart.config.input.options.scales.xAxes[0].scaleLabel.fontColor = '#ecf0f1';
       this.chart.config.input.options.scales.yAxes[0].scaleLabel.fontColor = '#ecf0f1';
+
+      this.chart.config.prediction.options.title.fontColor = '#ecf0f1';
+      this.chart.config.prediction.options.legend.labels.fontColor = '#ecf0f1'
+      this.chart.config.prediction.options.scales.xAxes[0].ticks.fontColor = '#ecf0f1';
+      this.chart.config.prediction.options.scales.yAxes[0].ticks.fontColor = '#ecf0f1';
+      this.chart.config.prediction.options.scales.xAxes[0].scaleLabel.fontColor = '#ecf0f1';
+      this.chart.config.prediction.options.scales.yAxes[0].scaleLabel.fontColor = '#ecf0f1';
 
       $('#container').addClass('night');      
       this.updateChartInput();
