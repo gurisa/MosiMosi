@@ -24,12 +24,16 @@
           </div>
         </div>
 
-        <div class="buttons my-3">          
-          <button class="btn btn-danger" v-on:click="setDefault(); updateChartInput(); updateChartPrediction();">Default</button>
-          <button class="btn btn-warning">Pause</button>
-          <button class="btn btn-primary">Play</button>          
+        <div class="card my-3">
+          <div class="card-body">
+            <div class="buttons">          
+              <button class="btn btn-warning" v-on:click="setDefault(); updateChartInput(); updateChartPrediction();">Default</button>
+              <button class="btn btn-danger">Stop</button>
+              <button class="btn btn-primary">Play</button>          
+            </div>
+          </div>
         </div>
-
+        
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <a v-for="(question, index) in questions" v-bind:class="{ 'active': index === menu }" class="nav-item nav-link" id="'nav-tab-' + index" data-toggle="tab" v-bind:href="'#tab-' + index" role="tab" v-bind:aria-controls="'tab-' + index" aria-selected="true" v-on:click="menu = index">
@@ -170,7 +174,7 @@
                     <b>Mencari nilai a:</b>
                     <p>
                       $$a = {\sum_{i=1}^n (y[i]) \over n} - {\Biggl( {{ toFixed(parameter.b, 4) }} {\sum_{i=1}^n (x[i]) \over n} \Biggr)}  $$
-                      $$a = {\sum({{ toFixed(total.y, 4) }}) \over {{ parameter.n }} } - {\Biggl( {{ toFixed(parameter.b, 4) }} {\sum ({{ toFixed(total.x, 4) }}) \over {{ parameter.n }} } \Biggr)}  $$
+                      $$a = {\sum({{ toFixed(total.Y, 4) }}) \over {{ parameter.n }} } - {\Biggl( {{ toFixed(parameter.b, 4) }} {\sum ({{ toFixed(total.X, 4) }}) \over {{ parameter.n }} } \Biggr)}  $$
                       $$a = {{ toFixed(average.Y, 4) }} - {\Biggl( {{ toFixed(parameter.b, 4) }} ({{ toFixed(average.X, 4) }}) \Biggr)}  $$
                       $$a = {{ toFixed(average.Y - (parameter.b * average.X), 4)  }} $$
                     </p>
@@ -188,6 +192,7 @@
                           <th>$x[i]$</th>
                           <th>$y[i]$</th>
                           <th>$y'[i]$</th>
+                          <th>$g'[i]$</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -200,17 +205,22 @@
                           </td>
                           <td>
                             <input type="number" class="form-control" v-bind:value="toFixed(item.ya, 4)" readonly>
-                          </td>                       
+                          </td>
+                          <td>
+                            <input type="number" class="form-control" v-bind:value="toFixed(error[index], 4)" readonly>
+                          </td>                      
                         </tr>
                         <tr>
                           <td>$\sum({{ toFixed(total.x, 4) }})$</td>
                           <td>$\sum({{ toFixed(total.y, 4) }})$</td>
                           <td>$\sum({{ toFixed(total.ya, 4) }})$</td>
+                          <td>$\sum({{ toFixed(total.err, 4) }})$</td>
                         </tr>
                         <tr>
                           <td>$\bar x({{ toFixed(average.x, 4) }})$</td>
                           <td>$\bar y({{ toFixed(average.y, 4) }})$</td>
                           <td>$\bar y'({{ toFixed(average.ya, 4) }})$</td>
+                          <td>$\bar g'({{ toFixed(average.err, 4) }})$</td>
                         </tr>
                       </tbody>
                     </table>
@@ -232,6 +242,21 @@
               <div class="row">
                 <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
                   <h5>Jawaban 6</h5>
+                  <p>
+                    Setelah melalui proses perhitungan yang dilakukan pada pertanyaan 4, diperoleh: <br> 
+                    $a = {{ toFixed(parameter.a, 4) }} $ dan 
+                    $b = {{ toFixed(parameter.b, 4) }} $, <br> 
+                    $y = {{ toFixed(parameter.C, 4) }}x^{ {{ toFixed(parameter.b, 4) }} } $ dan
+                    $g = {{ toFixed(parameter.g, 4) }}\% $ 
+                  </p>
+                  <p>
+                    Berdasarkan nilai galat yang diperoleh sebesar ${{ toFixed(parameter.g, 4) }}\% $ dapat disimpulkan bahwa: <br>
+                    Model $y = {{ toFixed(parameter.C, 4) }}x^{ {{ toFixed(parameter.b, 4) }} } $ 
+                    <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 10 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 10 ) }">
+                        {{ (toFixed(parameter.g, 4) > 10 ) ? 'kurang cocok' : 'cocok' }} 
+                    </span>                    
+                    digunakan untuk data pada tabel dikarenakan galatnya melebihi toleransi galat sebesar $10\%$
+                  </p>
                   <canvas id="statistic-prediction" width="800" height="500"></canvas>
                   <div class="buttons">
                     <button class="btn btn-danger" v-on:click="removePrediction()">Kurangi</button>

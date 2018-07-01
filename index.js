@@ -11,14 +11,15 @@ var app = new Vue({
     ],
     menu: 0,
     data: [],
-    watchData: [],
     prediction: [],
+    error:[],
     total: [],
     average: [],
     parameter: {
       a: 0,
       b: 0,
       C: 0,
+      g: 0,
       n: 0,
     },
     chart: {},
@@ -96,6 +97,7 @@ var app = new Vue({
         X2: this.totalOf(this.adjust(this.data, 'X2')),
         XY: this.totalOf(this.adjust(this.data, 'XY')),
         ya: this.totalOf(this.adjust(this.data, 'ya')),
+        err: this.totalOf(this.error),
       };
   
       this.average = {
@@ -106,6 +108,7 @@ var app = new Vue({
         X2: this.averageOf(this.total.X2, this.parameter.n),
         XY: this.averageOf(this.total.XY, this.parameter.n),
         ya: this.averageOf(this.total.ya, this.parameter.n),
+        err: this.total.err / this.parameter.n,
       };
 
       this.parameter = {
@@ -117,11 +120,17 @@ var app = new Vue({
 
       this.changeData(this.yOf(this.adjust(this.data, 'x'), this.parameter.b, this.parameter.C), 'ya');
 
-      this.total.ya = this.totalOf(this.adjust(this.data, 'ya'));
+      this.total.ya = this.totalOf(this.adjust(this.data, 'ya'));      
       this.average.ya = this.averageOf(this.total.ya, this.parameter.n);
-          
+      
       this.prediction = this.yOf(this.adjust(this.data, 'x'), this.parameter.b, this.parameter.C);    
+      this.error = this.errorOf(this.adjust(this.data, 'y'), this.adjust(this.data, 'ya'));
+      
+      this.total.err = this.totalOf(this.error);
+      this.average.err = this.total.err / this.parameter.n;
 
+      this.parameter.g = this.getG();
+      
       if (this.callback === true) {
         this.updateChartInput();
         this.updateChartPrediction();
@@ -201,6 +210,17 @@ var app = new Vue({
       }
       return temp;
     },
+    errorOf: function(data1, data2) {
+      var temp = [];
+      if (data1 && data2) {
+        if (data1.length === data2.length) {
+          for (var i = 0; i < data1.length; i++) {
+            temp[i] = Math.abs(data1[i] - data2[i]);
+          }
+        }
+      }
+      return temp;
+    },
     yOf: function(data, b, c) {
       var temp = [];
       if (data && b && c) {
@@ -218,7 +238,10 @@ var app = new Vue({
     },
     getC: function() {
       return Math.exp(this.getA());
-    },    
+    },
+    getG: function() {
+      return (this.average.err / this.average.y) * 100;
+    },
     addPrediction: function() {     
       this.prediction.push(this.parameter.C * Math.pow(this.prediction.length+1, this.parameter.b));
       if (this.chart.config.prediction.data.datasets.length > 0 && this.prediction.length <= 30) {
