@@ -115,10 +115,10 @@
                       <tbody>
                         <tr v-for="(item, index) in data">
                           <td>
-                            <input type="number" class="form-control" v-model.number="item.x">
+                            <input type="number" class="form-control" v-model.number="item.x" v-on:change="reInit()">
                           </td>
                           <td>
-                            <input type="number" class="form-control" v-model.number="item.y">
+                            <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
                           </td>
                           <td>
                             <input type="number" class="form-control" v-bind:value="toFixed(item.X, 4)" readonly>
@@ -186,10 +186,10 @@
                       <tbody>
                         <tr v-for="(item, index) in data">
                           <td>
-                            <input type="number" class="form-control" v-model.number="item.x">
+                            <input type="number" class="form-control" v-model.number="item.x" v-on:change="reInit()">
                           </td>
                           <td>
-                            <input type="number" class="form-control" v-model.number="item.y">
+                            <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
                           </td>
                           <td>
                             <input type="number" class="form-control" v-bind:value="toFixed(item.ya, 4)" readonly>
@@ -227,8 +227,8 @@
                   <h5>Jawaban 6</h5>
                   <canvas id="statistic-prediction" width="800" height="500"></canvas>
                   <div class="buttons">
-                    <button class="btn btn-danger" id="btn-remove-prediction" v-on:click="removePrediction()">Kurangi</button>
-                    <button class="btn btn-primary" id="btn-add-prediction" v-on:click="addPrediction()">Prediksi</button>
+                    <button class="btn btn-danger" v-on:click="removePrediction()">Kurangi</button>
+                    <button class="btn btn-primary" v-on:click="addPrediction()">Prediksi</button>
                   </div>                  
                 </div>
               </div>
@@ -248,10 +248,10 @@
           <tbody>
             <tr v-for="(item, index) in data">
               <td>
-                <input type="number" class="form-control" v-model.number="item.x">
+                <input type="number" class="form-control" v-model.number="item.x" v-on:change="reInit()">
               </td>
               <td>
-                <input type="number" class="form-control" v-model.number="item.y">
+                <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
               </td>
             </tr>
             <tr>
