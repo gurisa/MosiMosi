@@ -13,6 +13,7 @@
     <hr>
     <div class="row">
       <div class="col col-12 col-lg-9 col-md-9 col-sm-12 col-xs-12">
+        
         <div class="card text-white bg-dark my-3">
           <div class="card-body">
             <h5 class="card-title">Petunjuk</h5>
@@ -21,6 +22,12 @@
               Jika suatu pemodelan matematis dari data pengamatan tersebut ada kecenderungan berbentuk $y = ab^x$ dengan $a$, $b$ adalah parameter data pengamatan, dan $x$, $y$ adalah variable data pengamatan.
             </p>
           </div>
+        </div>
+
+        <div class="buttons my-3">          
+          <button class="btn btn-danger" v-on:click="setDefault(); updateChartInput(); updateChartPrediction();">Default</button>
+          <button class="btn btn-warning">Pause</button>
+          <button class="btn btn-primary">Play</button>          
         </div>
 
         <nav>

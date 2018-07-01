@@ -22,6 +22,7 @@ var app = new Vue({
       n: 0,
     },
     chart: {},
+    callback: false,
   },
   mounted: function() {    
     this.chart = {
@@ -69,28 +70,13 @@ var app = new Vue({
       }
     };
     
-    this.data = [
-      {x: 1, y: 2.175, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 2, y: 3.787, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 3, y: 6.7, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 4, y: 11.711, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 5, y: 20.495, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 6, y: 35.904, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 7, y: 62.789, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 8, y: 109.96, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 9, y: 192.419, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 10, y: 336.75, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 11, y: 589.3, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 12, y: 1031, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 13, y: 1800.95, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 14, y: 3157.987, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      {x: 15, y: 5525.766, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-    ]; 
-
+    this.setDefault();
     this.reInit();
 
     this.initChartPrediction();
     this.initChartInput();
+
+    this.callback = true;
   },
   methods: {
     reInit: function() {
@@ -135,6 +121,30 @@ var app = new Vue({
       this.average.ya = this.averageOf(this.total.ya, this.parameter.n);
           
       this.prediction = this.yOf(this.adjust(this.data, 'x'), this.parameter.b, this.parameter.C);    
+
+      if (this.callback === true) {
+        this.updateChartInput();
+        this.updateChartPrediction();
+      }
+    },
+    setDefault: function() {
+      this.data = [
+        {x: 1, y: 2.175, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 2, y: 3.787, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 3, y: 6.7, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 4, y: 11.711, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 5, y: 20.495, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 6, y: 35.904, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 7, y: 62.789, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 8, y: 109.96, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 9, y: 192.419, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 10, y: 336.75, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 11, y: 589.3, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 12, y: 1031, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 13, y: 1800.95, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 14, y: 3157.987, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+        {x: 15, y: 5525.766, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
+      ]; 
     },
     totalOf: function(data) {
       var total = 0;
@@ -208,7 +218,7 @@ var app = new Vue({
     },
     getC: function() {
       return Math.exp(this.getA());
-    },
+    },    
     addPrediction: function() {     
       this.prediction.push(this.parameter.C * Math.pow(this.prediction.length+1, this.parameter.b));
       if (this.chart.config.prediction.data.datasets.length > 0 && this.prediction.length <= 30) {
@@ -232,6 +242,44 @@ var app = new Vue({
     toFixed: function(value, precision) {
       var power = Math.pow(10, precision || 0);
       return String(Math.round(value * power) / power);
+    },
+    initChartInput: function() {
+      var stats_input = document.getElementById('statistic-input');
+      if (stats_input) {
+        this.chart.config.input = {
+          type: "line",
+            data: {
+              labels: this.adjust(this.data, 'x'),
+              datasets: [
+                {
+                  label: "Data Curah Hujan",
+                  data: this.adjust(this.data, 'y'),
+                  fill: false,
+                  backgroundColor: "rgba(54, 162, 235, 0.2)",
+                  borderColor: "rgba(54, 162, 235, 1)",
+                  borderWidth: 3,
+                  lineTension: 0.1,
+                  pointRadius: 8,
+                  pointHoverRadius: 13,
+                },
+                {
+                  label: "Data Hasil Perhitungan",
+                  data: this.adjust(this.data, 'ya'),
+                  fill: false,            
+                  backgroundColor: "rgba(254, 162, 135, 0.2)",
+                  borderColor: "rgba(254, 162, 135, 1)",
+                  borderWidth: 3,
+                  lineTension: 0.1,
+                  pointRadius: 8,
+                  pointHoverRadius: 13,
+                  borderDash: [5, 5],
+                },
+              ]
+            },
+            options: this.chart.options
+        };
+        this.chart.object.input = new Chart(stats_input, this.chart.config.input); 
+      }
     },
     initChartPrediction: function() {
       var stats_prediction = document.getElementById('statistic-prediction');
@@ -283,44 +331,19 @@ var app = new Vue({
         this.chart.object.prediction =  new Chart(stats_prediction, this.chart.config.prediction); 
       }
     },
-    initChartInput: function() {
-      var stats_input = document.getElementById('statistic-input');
-      if (stats_input) {
-        this.chart.config.input = {
-          type: "line",
-            data: {
-              labels: this.adjust(this.data, 'x'),
-              datasets: [
-                {
-                  label: "Data Curah Hujan",
-                  data: this.adjust(this.data, 'y'),
-                  fill: false,
-                  backgroundColor: "rgba(54, 162, 235, 0.2)",
-                  borderColor: "rgba(54, 162, 235, 1)",
-                  borderWidth: 3,
-                  lineTension: 0.1,
-                  pointRadius: 8,
-                  pointHoverRadius: 13,
-                },
-                {
-                  label: "Data Hasil Perhitungan",
-                  data: this.adjust(this.data, 'ya'),
-                  fill: false,            
-                  backgroundColor: "rgba(254, 162, 135, 0.2)",
-                  borderColor: "rgba(254, 162, 135, 1)",
-                  borderWidth: 3,
-                  lineTension: 0.1,
-                  pointRadius: 8,
-                  pointHoverRadius: 13,
-                  borderDash: [5, 5],
-                },
-              ]
-            },
-            options: this.chart.options
-        };
-        this.chart.object.input = new Chart(stats_input, this.chart.config.input); 
-      }
-    }
+    updateChartInput: function() {
+      this.chart.config.input.data.labels = this.adjust(this.data, 'x');
+      this.chart.config.input.data.datasets[0].data = this.adjust(this.data, 'y');
+      this.chart.config.input.data.datasets[1].data = this.adjust(this.data, 'ya');
+      this.chart.object.input.update();
+    },
+    updateChartPrediction: function() {
+      this.chart.config.prediction.data.labels = this.adjust(this.data, 'x');
+      this.chart.config.prediction.data.datasets[0].data = this.adjust(this.data, 'y');
+      this.chart.config.prediction.data.datasets[1].data = this.adjust(this.data, 'ya');
+      this.chart.config.prediction.data.datasets[2].data = this.prediction;
+      this.chart.object.prediction.update();
+    },
   },
   watch: {
 
@@ -330,17 +353,13 @@ var app = new Vue({
   }
 });
 
-$(document).ready(function() {
-  
-  // if ($('#modal-rindu')) {
-  //   $('#modal-rindu').modal({
-  //     keyboard: false,
-  //     focus: false,
-  //     show: true
-  //   });
-  // }
-
-});
+document.onreadystatechange = function () {
+  if (document.readyState == "interactive") {
+    if (document.getElementById('modal-rindu')) {
+      // $('#modal-rindu').modal({keyboard: false, focus: false, show: true });
+    }
+  }
+}
 
 
 
