@@ -24,6 +24,7 @@ var app = new Vue({
     },
     chart: {},
     callback: false,
+    config: {},
   },
   mounted: function() {    
     this.chart = {
@@ -71,6 +72,32 @@ var app = new Vue({
       }
     };
     
+    this.config = {
+      snowfall: {
+        image : "assets/images/water.png",
+        round : false, 
+        shadow: true,
+        minSize: 5, 
+        maxSize: 8,
+        minSpeed: 5,
+        maxSpeed: 10,
+        flakeColor: '#ecf0f1',
+        flakeCount : 10,
+        flakeIndex: 0,
+        // collection : ".snow-container",   
+      },
+      raindrops: {
+        color: '#2e86de',
+        canvasHeight: 50, //tinggi air
+        waveLength: 100, //panjang gelombang
+        waveHeight: 50, //tinggi gelombang
+        density: 0.005, //jarak antar tiap tetes air
+        frequency: 10, //jumlah air menetes
+        rippleSpeed: 0.01, //kecepatan tetes air
+      },
+      buttons: {},
+    };
+
     this.setDefault();
     this.reInit();
 
@@ -372,9 +399,21 @@ var app = new Vue({
     rain: function(amount = 100) {
       
     },
+    float: function(amount = 100) {
+
+    },
+    play: function() {
+      $(document).snowfall(app.config.snowfall);
+      $('.raindrops').raindrops(app.config.raindrops);  
+    },
+    stop: function() {
+      $(document).snowfall('clear');
+    }
   },
   watch: {
+    menu: function(newVal, oldVal) {
 
+    }
   },
   computed: {
 
@@ -388,33 +427,3 @@ document.onreadystatechange = function () {
     }
   }
 }
-
-$(document).snowfall({
-  image : "assets/images/water.png",
-  round : true, 
-  shadow: true,
-  minSize: 5, 
-  maxSize: 8,
-  minSpeed: 5,
-  maxSpeed: 10,
-  flakeColor: '#ecf0f1',
-  flakeCount : 10,
-  flakeIndex: 0,
-  // collection : ".snow-container",   
-});
-
-$('.raindrops').raindrops({
-  color: '#2e86de',
-  canvasHeight: 50, //tinggi air
-  waveLength: 100, //panjang gelombang
-  waveHeight: 50, //tinggi gelombang
-  density: 0.005, //jarak antar tiap tetes air
-  frequency: 10, //jumlah air menetes
-  rippleSpeed: 0.01, //kecepatan tetes air
-});  
-
-$("#clear").click(function(){
-  $(document).snowfall('clear');
-});
-
-
