@@ -403,6 +403,16 @@ $(document).snowfall({
   // collection : ".snow-container",   
 });
 
+$('.raindrops').raindrops({
+  color: '#2e86de',
+  canvasHeight: 50, //tinggi air
+  waveLength: 100, //panjang gelombang
+  waveHeight: 50, //tinggi gelombang
+  density: 0.005, //jarak antar tiap tetes air
+  frequency: 10, //jumlah air menetes
+  rippleSpeed: 0.01, //kecepatan tetes air
+});  
+
 $("#clear").click(function(){
   $(document).snowfall('clear');
 });
