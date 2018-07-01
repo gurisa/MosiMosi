@@ -130,7 +130,7 @@ var app = new Vue({
       this.average.err = this.total.err / this.parameter.n;
 
       this.parameter.g = this.getG();
-      
+
       if (this.callback === true) {
         this.updateChartInput();
         this.updateChartPrediction();
@@ -242,9 +242,9 @@ var app = new Vue({
     getG: function() {
       return (this.average.err / this.average.y) * 100;
     },
-    addPrediction: function() {     
-      this.prediction.push(this.parameter.C * Math.pow(this.prediction.length+1, this.parameter.b));
-      if (this.chart.config.prediction.data.datasets.length > 0 && this.prediction.length <= 30) {
+    addPrediction: function() {           
+      if (this.chart.config.prediction.data.datasets.length > 0 && this.prediction.length < 30) {
+        this.prediction.push(this.parameter.C * Math.pow(this.prediction.length+1, this.parameter.b));
         this.chart.config.prediction.data.labels.push(this.prediction.length);
         this.chart.object.prediction.update();
       }

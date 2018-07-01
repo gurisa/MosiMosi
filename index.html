@@ -253,15 +253,26 @@
                     Berdasarkan nilai galat yang diperoleh sebesar ${{ toFixed(parameter.g, 4) }}\% $ dapat disimpulkan bahwa: <br>
                     Model $y = {{ toFixed(parameter.C, 4) }}x^{ {{ toFixed(parameter.b, 4) }} } $ 
                     <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 10 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 10 ) }">
-                        {{ (toFixed(parameter.g, 4) > 10 ) ? 'kurang cocok' : 'cocok' }} 
+                        {{ (toFixed(parameter.g, 4) > 10 ) ? 'kurang sesuai' : 'sesuai' }} 
                     </span>                    
-                    digunakan untuk data pada tabel dikarenakan galatnya melebihi toleransi galat sebesar $10\%$
+                    digunakan untuk data pada tabel dikarenakan galatnya 
+                    <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 10 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 10 ) }">
+                      {{ (toFixed(parameter.g, 4) > 10 ) ? 'melebihi' : 'kurang' }} 
+                    </span> 
+                    dari toleransi galat sebesar $10\%$
                   </p>
                   <canvas id="statistic-prediction" width="800" height="500"></canvas>
                   <div class="buttons">
                     <button class="btn btn-danger" v-on:click="removePrediction()">Kurangi</button>
                     <button class="btn btn-primary" v-on:click="addPrediction()">Prediksi</button>
-                  </div>                  
+                  </div>
+                  <hr>
+                  <span class="badge badge-dark px-2 py-2 mr-1 my-1" v-for="(item, index) in prediction" v-if="index < 15">
+                    {{ index + 1 }}: {{ toFixed(item, 4) }} <br>
+                  </span>
+                  <span class="badge badge-success px-2 py-2 mr-1 my-1" v-for="(item, index) in prediction" v-if="index >= 15">
+                    {{ index + 1 }}: {{ toFixed(item, 4) }} <br>
+                  </span>
                 </div>
               </div>
             </div>
