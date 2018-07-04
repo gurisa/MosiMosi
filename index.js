@@ -15,13 +15,7 @@ var app = new Vue({
     error:[],
     total: [],
     average: [],
-    parameter: {
-      a: 0,
-      b: 0,
-      C: 0,
-      g: 0,
-      n: 0,
-    },
+    parameter: {a: 0, b: 0, C: 0, g: 0, n: 0, error: 0.1},
     chart: {},
     callback: false,
     config: {
@@ -30,7 +24,13 @@ var app = new Vue({
       buttons: {
         stop: {},
         play: {},
-      },
+      },      
+    },
+    math: {
+      total: {x: '', y: '', X: '', Y: '', X2: '', XY: '', ya: '', err: ''},
+      average: {x: '', y: '', X: '', Y: '', X2: '', XY: '', ya: '', err: ''},
+      equation: {a: '', b: '', y: '', g: ''},
+      formula: {a: '', b: '', y: '', g: ''},
     },
   },
   mounted: function() {  
@@ -206,6 +206,7 @@ var app = new Vue({
         this.updateChartPrediction();
       }
       
+      this.reInitFormula();
     },
     setDefault: function() {
       this.data = [
@@ -224,7 +225,8 @@ var app = new Vue({
         {x: 13, y: 1800.95, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
         {x: 14, y: 3157.987, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
         {x: 15, y: 5525.766, X: 0, Y: 0, X2: 0, XY: 0, ya: 0},
-      ]; 
+      ];
+      this.reInit(); 
     },
     totalOf: function(data) {
       var total = 0;
@@ -533,12 +535,66 @@ var app = new Vue({
       this.updateChartInput();
       this.updateChartPrediction();
     },
-    showSingle: function() {
+    reInitFormula: function() {
+      var pattern = ['x', 'y', 'X', 'Y', 'X2', 'XY', 'ya', 'err'];
+      var symbol = ['x', 'y', 'X', 'Y', 'X^2', 'XY', 'y\'', 'g'];
+      var formula = ['a', 'b'];
+      var formulaEquation = ['b1', 'b2', 'b3', 'b4', 'a1', 'a2', 'a3', 'a', 'b', 'y', 'g'];
 
-    },
-    showSingleEquation: function() {
+      for (var i = 0; i < pattern.length; i++) {
+        this.showFormulaTotal(pattern[i], symbol[i]);
+        this.showFormulaAverage(pattern[i], symbol[i]);
+      }
 
+      for (var i = 0; i < formula.length; i++) {
+        this.showFormula(formula[i]);
+      }
+
+      for (var i = 0; i < formulaEquation.length; i++) {
+        this.showFormulaEquation(formulaEquation[i]);
+      }
+
+      this.$nextTick(function() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+      });
     },
+    showFormulaTotal: function(data, symbol = '') {
+      if (this.total[data]) {
+        this.math.total[data] = '`sum(' + this.toFixed(this.total[data], 4) + ')`';
+      }      
+    },
+    showFormulaAverage: function(data, symbol = '') {
+      if (this.average[data]) {
+        this.math.average[data] = '`bar {' + symbol + '} (' + this.toFixed(this.average[data], 4) + ')`';
+      }      
+    },
+    showFormulaEquation: function(data) {
+      var equation = {
+        b1: '$$ b = { {{' + this.parameter.n + '}} \\sum({{ ' + this.toFixed(this.total.XY, 4) + '}}) - \\sum ({{' + this.toFixed(this.total.X, 4) + '}}) * \\sum ({{' + this.toFixed(this.total.Y, 4) + '}}) \\over {{' + this.parameter.n + ' }} \\sum ({{' + this.toFixed(this.total.X2, 4) + '}}) - \\sum ({{' + this.toFixed(this.total.X, 4) + '}})^2} $$',
+        b2: '$$ b = { {{' + this.toFixed(this.parameter.n * this.total.XY, 4) + '}} - {{' + this.toFixed(this.total.X * this.total.Y, 4) + '}} \\over {{' + this.toFixed(this.parameter.n * this.total.X2, 4) + '}} - {{' + this.toFixed(this.total.X * this.total.X, 4) + '}} } $$',
+        b3: '$$ b = { {{' + this.toFixed((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y), 4) + '}} \\over {{' + this.toFixed((this.parameter.n * this.total.X2) - (this.total.X * this.total.X), 4) + '}} } $$',
+        b4: '$$ b = { {{' + this.toFixed(((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y)) / ((this.parameter.n * this.total.X2) - (this.total.X * this.total.X)), 4) + '}} } $$',
+        a1: '$$ a = {\\sum({{' +  this.toFixed(this.total.Y, 4) + '}}) \\over {{' + this.parameter.n + '}} } - {\\Biggl( {{' + this.toFixed(this.parameter.b, 4) + '}} {\\sum ({{' + this.toFixed(this.total.X, 4) + '}}) \\over {{' + this.parameter.n + '}} } \\Biggr)} $$',
+        a2: '$$ a = {{' + this.toFixed(this.average.Y, 4) + '}} - {\\Biggl( {{' + this.toFixed(this.parameter.b, 4) + '}} ({{' + this.toFixed(this.average.X, 4) + '}}) \\Biggr)}  $$',
+        a3: '$$ a = {{' + this.toFixed(this.average.Y - (this.parameter.b * this.average.X), 4) + '}} $$',
+        a: '$ a = {{' + this.toFixed(this.parameter.a, 4) + '}} $',
+        b: '$ b = {{' + this.toFixed(this.parameter.b, 4) + '}} $',
+        y: '$ y = {{' + this.toFixed(this.parameter.C, 4) + '}}x^{ {{' + this.toFixed(this.parameter.b, 4) + '}} } $',
+        g: '$ g = {{' + this.toFixed(this.parameter.g, 4) + '}}\\% $',
+      };
+      this.math.equation[data] = equation[data];
+    },
+    showFormula: function(data) {
+      switch (data) {
+        case 'b':
+          this.math.formula[data] = '$$ b = {n\\sum_{i=1}^n (X[i] * Y[i]) - \\sum_{i=1}^n (X[i]) * \\sum_{i=1}^n (Y[i]) \\over (n\\sum_{i=1}^n (X[i]))^2 - (\\sum_{i=1}^n (X[i]))^2)} $$';
+        break;
+        case 'a':
+          this.math.formula[data] = '$$ a = {\\sum_{i=1}^n (Y[i]) \\over n} - {\\Biggl(b {\\sum_{i=1}^n (X[i]) \\over n} \\Biggr)} $$';
+        break;   
+        default:break;
+      }      
+    }
   },
   watch: {
     menu: function(newVal, oldVal) {
@@ -563,7 +619,7 @@ var app = new Vue({
 document.onreadystatechange = function () {
   if (document.readyState == "interactive") {
     if (document.getElementById('modal-rindu')) {
-      // $('#modal-rindu').modal({keyboard: false, focus: false, show: true });
+      $('#modal-rindu').modal({keyboard: false, focus: false, show: true });
     }
   }
 }
