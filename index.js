@@ -154,15 +154,15 @@ var app = new Vue({
       
       this.changeData(this.lnOf(this.adjust(this.data, 'x')), 'X');
       this.changeData(this.lnOf(this.adjust(this.data, 'y')), 'Y');
-      this.changeData(this.multipleOf(this.adjust(this.data, 'X'), this.adjust(this.data, 'X')), 'X2');
-      this.changeData(this.multipleOf(this.adjust(this.data, 'X'), this.adjust(this.data, 'Y')), 'XY');     
+      this.changeData(this.multipleOf(this.adjust(this.data, 'x'), this.adjust(this.data, 'x')), 'X2');
+      this.changeData(this.multipleOf(this.adjust(this.data, 'x'), this.adjust(this.data, 'Y')), 'XY');     
 
       this.parameter.n = this.data.length;
       
       this.total = {
         x: this.totalOf(this.adjust(this.data, 'x')),
         y: this.totalOf(this.adjust(this.data, 'y')),
-        X: this.totalOf(this.adjust(this.data, 'X')),
+        X: this.totalOf(this.adjust(this.data, 'x')),
         Y: this.totalOf(this.adjust(this.data, 'Y')),
         X2: this.totalOf(this.adjust(this.data, 'X2')),
         XY: this.totalOf(this.adjust(this.data, 'XY')),
@@ -173,7 +173,7 @@ var app = new Vue({
       this.average = {
         x: this.averageOf(this.total.x, this.parameter.n),
         y: this.averageOf(this.total.y, this.parameter.n),
-        X: this.averageOf(this.total.X, this.parameter.n),
+        X: this.averageOf(this.total.x, this.parameter.n),
         Y: this.averageOf(this.total.Y, this.parameter.n),
         X2: this.averageOf(this.total.X2, this.parameter.n),
         XY: this.averageOf(this.total.XY, this.parameter.n),
@@ -184,16 +184,14 @@ var app = new Vue({
       this.parameter = {
         a: this.getA(),
         b: this.getB(),
-        C: this.getC(),
         n: this.data.length,
       };
 
-      this.changeData(this.yOf(this.adjust(this.data, 'x'), this.parameter.b, this.parameter.C), 'ya');
-
+      this.changeData(this.yOf(this.adjust(this.data, 'x'), this.parameter.a, this.parameter.b), 'ya');
       this.total.ya = this.totalOf(this.adjust(this.data, 'ya'));      
       this.average.ya = this.averageOf(this.total.ya, this.parameter.n);
       
-      this.prediction = this.yOf(this.adjust(this.data, 'x'), this.parameter.b, this.parameter.C);    
+      this.prediction = this.yOf(this.adjust(this.data, 'x'), this.parameter.a, this.parameter.b);    
       this.error = this.errorOf(this.adjust(this.data, 'y'), this.adjust(this.data, 'ya'));
       
       this.total.err = this.totalOf(this.error);
@@ -294,30 +292,27 @@ var app = new Vue({
       }
       return temp;
     },
-    yOf: function(data, b, c) {
+    yOf: function(data, a, b) {
       var temp = [];
-      if (data && b && c) {
+      if (data && a && b) {
         for (var i = 0; i < data.length; i++) {
-          temp[i] = c * Math.pow(data[i], b);
+          temp[i] = a * Math.pow(b, data[i]);
         }
       }
       return temp;
     },
     getA: function() {
-      return (this.average.Y - (this.getB() * this.average.X));
+      return Math.pow(Math.E, (this.average.Y - (Math.log(this.getB()) * this.average.X)));
     },
     getB: function() {
-      return (((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y)) / ((this.parameter.n * this.total.X2) - (this.total.X * this.total.X)));
-    },
-    getC: function() {
-      return Math.exp(this.getA());
+      return Math.pow(Math.E, ((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y)) / ((this.parameter.n * this.total.X2) - (this.total.X * this.total.X)));
     },
     getG: function() {
       return (this.average.err / this.average.y) * 100;
     },
-    addPrediction: function() {           
+    addPrediction: function() {
       if (this.chart.config.prediction.data.datasets.length > 0 && this.prediction.length < 30) {
-        this.prediction.push(this.parameter.C * Math.pow(this.prediction.length+1, this.parameter.b));
+        this.prediction.push(this.parameter.a * Math.pow(this.parameter.b, this.prediction.length + 1));
         this.chart.config.prediction.data.labels.push(this.prediction.length);
         this.chart.object.prediction.update();
       }
@@ -539,7 +534,7 @@ var app = new Vue({
       var pattern = ['x', 'y', 'X', 'Y', 'X2', 'XY', 'ya', 'err'];
       var symbol = ['x', 'y', 'X', 'Y', 'X^2', 'XY', 'y\'', 'g'];
       var formula = ['a', 'b'];
-      var formulaEquation = ['b1', 'b2', 'b3', 'b4', 'a1', 'a2', 'a3', 'a', 'b', 'y', 'g'];
+      var formulaEquation = ['b1', 'b2', 'b3', 'b4', 'b5', 'a1', 'a2', 'a3', 'a4', 'a', 'b', 'y', 'g', 'e'];
 
       for (var i = 0; i < pattern.length; i++) {
         this.showFormulaTotal(pattern[i], symbol[i]);
@@ -570,27 +565,30 @@ var app = new Vue({
     },
     showFormulaEquation: function(data) {
       var equation = {
-        b1: '$$ b = { {{' + this.parameter.n + '}} \\sum({{ ' + this.toFixed(this.total.XY, 4) + '}}) - \\sum ({{' + this.toFixed(this.total.X, 4) + '}}) * \\sum ({{' + this.toFixed(this.total.Y, 4) + '}}) \\over {{' + this.parameter.n + ' }} \\sum ({{' + this.toFixed(this.total.X2, 4) + '}}) - \\sum ({{' + this.toFixed(this.total.X, 4) + '}})^2} $$',
-        b2: '$$ b = { {{' + this.toFixed(this.parameter.n * this.total.XY, 4) + '}} - {{' + this.toFixed(this.total.X * this.total.Y, 4) + '}} \\over {{' + this.toFixed(this.parameter.n * this.total.X2, 4) + '}} - {{' + this.toFixed(this.total.X * this.total.X, 4) + '}} } $$',
-        b3: '$$ b = { {{' + this.toFixed((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y), 4) + '}} \\over {{' + this.toFixed((this.parameter.n * this.total.X2) - (this.total.X * this.total.X), 4) + '}} } $$',
-        b4: '$$ b = { {{' + this.toFixed(((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y)) / ((this.parameter.n * this.total.X2) - (this.total.X * this.total.X)), 4) + '}} } $$',
-        a1: '$$ a = {\\sum({{' +  this.toFixed(this.total.Y, 4) + '}}) \\over {{' + this.parameter.n + '}} } - {\\Biggl( {{' + this.toFixed(this.parameter.b, 4) + '}} {\\sum ({{' + this.toFixed(this.total.X, 4) + '}}) \\over {{' + this.parameter.n + '}} } \\Biggr)} $$',
-        a2: '$$ a = {{' + this.toFixed(this.average.Y, 4) + '}} - {\\Biggl( {{' + this.toFixed(this.parameter.b, 4) + '}} ({{' + this.toFixed(this.average.X, 4) + '}}) \\Biggr)}  $$',
-        a3: '$$ a = {{' + this.toFixed(this.average.Y - (this.parameter.b * this.average.X), 4) + '}} $$',
+        b1: '$$ b = exp \\Biggl( { {{' + this.parameter.n + '}} \\sum({{ ' + this.toFixed(this.total.XY, 4) + '}}) - \\sum ({{' + this.toFixed(this.total.X, 4) + '}}) * \\sum ({{' + this.toFixed(this.total.Y, 4) + '}}) \\over {{' + this.parameter.n + ' }} \\sum ({{' + this.toFixed(this.total.X2, 4) + '}}) - \\sum ({{' + this.toFixed(this.total.X, 4) + '}})^2} \\Biggr) $$',
+        b2: '$$ b = exp \\Biggl( { {{' + this.toFixed(this.parameter.n * this.total.XY, 4) + '}} - {{' + this.toFixed(this.total.X * this.total.Y, 4) + '}} \\over {{' + this.toFixed(this.parameter.n * this.total.X2, 4) + '}} - {{' + this.toFixed(this.total.X * this.total.X, 4) + '}} } \\Biggr) $$',
+        b3: '$$ b = exp \\Biggl( { {{' + this.toFixed((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y), 4) + '}} \\over {{' + this.toFixed((this.parameter.n * this.total.X2) - (this.total.X * this.total.X), 4) + '}} } \\Biggr) $$',
+        b4: '$$ b = exp \\Biggl( { {{' + this.toFixed(((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y)) / ((this.parameter.n * this.total.X2) - (this.total.X * this.total.X)), 4) + '}} } \\Biggr) $$',
+        b5: '$$ b = { {{' + this.toFixed(Math.pow(Math.E, this.toFixed(((this.parameter.n * this.total.XY) - (this.total.X * this.total.Y)) / ((this.parameter.n * this.total.X2) - (this.total.X * this.total.X)), 4)), 4) + '}} } $$',
+        a1: '$$ a = exp \\Biggl( {\\sum({{' +  this.toFixed(this.total.Y, 4) + '}}) \\over {{' + this.parameter.n + '}} } - {\\biggl( {{' + this.toFixed(Math.log(this.parameter.b), 4) + '}} {\\sum ({{' + this.toFixed(this.total.X, 4) + '}}) \\over {{' + this.parameter.n + '}} } \\biggr)} \\Biggr) $$',
+        a2: '$$ a = exp \\Biggl( {{' + this.toFixed(this.average.Y, 4) + '}} - {\\biggl( {{' + this.toFixed(Math.log(this.parameter.b), 4) + '}} ({{' + this.toFixed(this.average.X, 4) + '}}) \\biggr)}  \\Biggr) $$',
+        a3: '$$ a = exp \\Biggl( {{' + this.toFixed(this.average.Y - (Math.log(this.parameter.b) * this.average.X), 4) + '}} \\Biggr) $$',
+        a4: '$$ a = {{' + this.toFixed(Math.pow(Math.E, this.toFixed(this.average.Y - (Math.log(this.parameter.b) * this.average.X), 4)), 4) + '}} $$',
         a: '$ a = {{' + this.toFixed(this.parameter.a, 4) + '}} $',
         b: '$ b = {{' + this.toFixed(this.parameter.b, 4) + '}} $',
-        y: '$ y = {{' + this.toFixed(this.parameter.C, 4) + '}}x^{ {{' + this.toFixed(this.parameter.b, 4) + '}} } $',
+        y: '$ y = {{' + this.toFixed(this.parameter.a, 4) + '}} (' + this.toFixed(this.parameter.b, 4) + '^{x}) $',
         g: '$ g = {{' + this.toFixed(this.parameter.g, 4) + '}}\\% $',
+        e: '$$ e = {{ \\bar{g} \\over \\bar{y} }} = {{' + this.toFixed(this.average.err, 4) + '\\over ' + this.toFixed(this.average.y, 4) + '}} \\times 100\\% = {{ ' + this.toFixed((this.average.err / this.average.y) * 100, 4) + '\\%  }} $$',
       };
       this.math.equation[data] = equation[data];
     },
     showFormula: function(data) {
       switch (data) {
         case 'b':
-          this.math.formula[data] = '$$ b = {n\\sum_{i=1}^n (X[i] * Y[i]) - \\sum_{i=1}^n (X[i]) * \\sum_{i=1}^n (Y[i]) \\over (n\\sum_{i=1}^n (X[i]))^2 - (\\sum_{i=1}^n (X[i]))^2)} $$';
+          this.math.formula[data] = '$$ b = exp \\Biggl( {n\\sum_{i=1}^n (X[i] * Y[i]) - \\sum_{i=1}^n (X[i]) * \\sum_{i=1}^n (Y[i]) \\over (n\\sum_{i=1}^n (X[i]))^2 - (\\sum_{i=1}^n (X[i]))^2) } \\Biggr) $$';
         break;
         case 'a':
-          this.math.formula[data] = '$$ a = {\\sum_{i=1}^n (Y[i]) \\over n} - {\\Biggl(b {\\sum_{i=1}^n (X[i]) \\over n} \\Biggr)} $$';
+          this.math.formula[data] = '$$ a = exp \\Biggl( {\\sum_{i=1}^n (Y[i]) \\over n} - {\\biggl(b {\\sum_{i=1}^n (X[i]) \\over n} \\biggr) } \\Biggr) $$';
         break;   
         default:break;
       }      
@@ -619,7 +617,7 @@ var app = new Vue({
 document.onreadystatechange = function () {
   if (document.readyState == "interactive") {
     if (document.getElementById('modal-rindu')) {
-      $('#modal-rindu').modal({keyboard: false, focus: false, show: true });
+      // $('#modal-rindu').modal({keyboard: false, focus: false, show: true });
     }
   }
 }

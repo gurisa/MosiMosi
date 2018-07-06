@@ -60,37 +60,31 @@
               <h5>Jawaban 1</h5>
               <div class="row">
                 <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <p>Karena sebelumnya sudah diketahui bahwa data memiliki kecenderungan berbentuk $y = ab^x$ maka metode linearisasi yang digunakan adalah <b>Linearisasi Pangkat Sederhana</b>.</p>
-                    <p>Persamaan $y = ab^x$ selanjutnya akan diubahsuaikan dengan persamaan $y = Cx^b$</p>
-                    <p><b>Langkah melakukan Linearisasi Pangkat Sederhana</b></p>
+                    <p>Karena sebelumnya sudah diketahui bahwa data memiliki kecenderungan berbentuk $y = ab^x$ maka metode linearisasi yang digunakan adalah <b>Linearisasi Eksponensial</b>.</p>
+                    <p><b>Langkah melakukan Linearisasi Eksponensial</b></p>
                     <p>
                       <ol>
-                        <li>Menyesuaikan data dengan fungsi $y = Cx^b$</li>
+                        <li>Menaksir fungsi $y = ab^x$ dengan fungsi $Y = a + bX$</li>
                         <li>
-                          Mendefinisikan nilai dari masing-masing parameter: $Y = a + bX$<br>
-                          $Y = \ln(y)$, <br> $a = \ln(C)$, <br> $X = \ln(x)$
-                        </li>
-                        <li><i>Mendefinisikan nilai $x[i]$ dan $y[i]$ (sudah diketahui dari tabel)</i></li>
-                        <li>
-                          Mencari nilai: <br> 
-                          $X[i] = ln(x[i])$, <br>
-                          $Y[i] = ln(y[i])$, <br>
-                          $(X[i])^2$, dan $(X[i] * Y[i])$<br>
-                          Serta memperoleh hasil perhitungan: <br>
-                          $$\sum_{i=1}^n (X[i]), \sum_{i=1}^n (Y[i]), \sum_{i=1}^n ((X[i])^2), dan \sum_{i=1}^n (X[i] * Y[i])$$
+                          Taksir nilai deviasi model:<br>
+                          $$ r = y - f(x) $$ 
+                          $$ r = y - ab^x $$
+                          $$ karena: R = r^2, maka: R = (y - ab^x)^2 $$
                         </li>
                         <li>
-                          Lakukan penyesuaian data yang sebelumnya bukan merupakan data linear dengan menggunakan sistem persamaan linear: <br>
-                          $$(n * a) + (\sum_{i=1}^n (X[i]) * b) = \sum_{i=1}^n (Y[i])$$
-                          $$(\sum_{i=1}^n (X[i]) * a) + ((\sum_{i=1}^n (X[i]))^2 * b) = \sum_{i=1}^n (X[i] * Y[i])$$
-                          <i>$n$ = jumlah data, <br> $a$ dan $b$ = parameter yang dicari</i>
+                          Karena nilai deviasi harus dibuat seminimum mungkin (nol) maka: <br>
+                          $$ ∂R/∂a (y - ab^x)^2=-2b^x (y - ab^x) = 0 $$
+                          $$ ∂R/∂b (y - ab^x)^2=-2axb^((x-1)) (y - ab^x) = 0 $$
                         </li>
-                        <li>Setelah dilakukan perhitungan diperoleh nilai parameter $a$ dan $b$.</li>
                         <li>
-                          Cari nilai $C$ melalui persamaan $C = e^a$ <br> 
-                          <i>$e = 2.718281828459045$ (konstanta euler)</i>
+                          Melalui penyederhanaan persamaan, diperoleh transformasi linear: <br>
+                          $$ Y=log⁡(y); a=log(a); b=log(b); X=x $$                          
                         </li>
-                        <li>Model akan diperoleh melalui persamaan: $y = Cx^b$</li>
+                        <li>
+                          Sehingga persamaan linear untuk model $ y = ab^x $ adalah: <br>
+                          $$ Y=a+bX $$
+                          $$ log⁡(y) = log⁡(a) + x log(b) $$
+                        </li>
                       </ol>
                     </p>
                 </div>
@@ -116,12 +110,11 @@
                     <table class="table table-responsive text-center">
                       <thead>
                         <tr>
-                          <th>$x[i]$</th>
+                          <th>$X[i] = x[i]$</th>
                           <th>$y[i]$</th>
-                          <th>$X[i]$</th>
-                          <th>$Y[i]$</th>
+                          <th>$Y[i] = ln(y[i])$</th>
                           <th>$(X[i])^2$</th>
-                          <th>$X[i] * Y[i]$</th>
+                          <th>$X[i] Y[i]$</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -131,9 +124,6 @@
                           </td>
                           <td>
                             <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
-                          </td>
-                          <td>
-                            <input type="number" class="form-control" v-bind:value="toFixed(item.X, 4)" readonly>
                           </td>
                           <td>
                             <input type="number" class="form-control" v-bind:value="toFixed(item.Y, 4)" readonly>
@@ -148,7 +138,6 @@
                         <tr>
                           <td v-html="math.total.x"></td>
                           <td v-html="math.total.y"></td>
-                          <td v-html="math.total.X"></td>
                           <td v-html="math.total.Y"></td>
                           <td v-html="math.total.X2"></td>
                           <td v-html="math.total.XY"></td>
@@ -156,7 +145,6 @@
                         <tr>
                           <td v-html="math.average.x"></td>
                           <td v-html="math.average.y"></td>
-                          <td v-html="math.average.X"></td>
                           <td v-html="math.average.Y"></td>
                           <td v-html="math.average.X2"></td>
                           <td v-html="math.average.XY"></td>
@@ -171,13 +159,15 @@
                       <span v-html="math.equation.b2"></span>
                       <span v-html="math.equation.b3"></span>
                       <span v-html="math.equation.b4"></span>
+                      <span v-html="math.equation.b5"></span>
                     </p>
                     <b>Mencari nilai a:</b>
                     <p>
                       <span v-html="math.formula.a"></span>
                       <span v-html="math.equation.a1"></span>
                       <span v-html="math.equation.a2"></span>
-                      <span v-html="math.equation.a3"></span>                                            
+                      <span v-html="math.equation.a3"></span>
+                      <span v-html="math.equation.a4"></span>
                     </p>
                 </div>
               </div>  
@@ -225,6 +215,22 @@
                         </tr>
                       </tbody>
                     </table>
+                    <p>
+                      Untuk mengetahui dan memastikan bahwa model yang digunakan baik, dilakukan perhitungan galat dengan cara mencari selisih antara data yang sebenarnya dengan data hasil pemodelan. <br>
+                      <span v-html="math.equation.e"></span>
+                    </p>
+                    <p>
+                      Berdasarkan nilai galat yang diperoleh sebesar <span v-html="math.equation.g"></span> dapat disimpulkan bahwa: <br>
+                      Model <span v-html="math.equation.y"></span>
+                      <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 5 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 5 ) }">
+                          {{ (toFixed(parameter.g, 4) > 5 ) ? 'kurang sesuai' : 'sesuai' }} 
+                      </span>                    
+                      digunakan untuk data pada tabel dikarenakan galatnya 
+                      <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 5 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 5 ) }">
+                        {{ (toFixed(parameter.g, 4) > 5 ) ? 'melebihi' : 'kurang' }} 
+                      </span> 
+                      dari toleransi galat sebesar $5\%$
+                    </p>
                 </div>
               </div>  
             </div>
@@ -246,16 +252,8 @@
                     <span v-html="math.equation.y"></span> dan <span v-html="math.equation.g"></span> <br>                    
                   </p>
                   <p>
-                    Berdasarkan nilai galat yang diperoleh sebesar <span v-html="math.equation.g"></span> dapat disimpulkan bahwa: <br>
-                    Model <span v-html="math.equation.y"></span>
-                    <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 10 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 10 ) }">
-                        {{ (toFixed(parameter.g, 4) > 10 ) ? 'kurang sesuai' : 'sesuai' }} 
-                    </span>                    
-                    digunakan untuk data pada tabel dikarenakan galatnya 
-                    <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 10 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 10 ) }">
-                      {{ (toFixed(parameter.g, 4) > 10 ) ? 'melebihi' : 'kurang' }} 
-                    </span> 
-                    dari toleransi galat sebesar $10\%$
+                    Berdasarkan kecenderungan data dan model, curah hujan di masa yang akan datang yakni pada minggu ke-16, 17, 18, .., dst. 
+                    <span class="badge badge-dark px-1 py-1">curah hujan akan terus meningkat</span>.
                   </p>
                   <canvas id="statistic-prediction" width="800" height="500"></canvas>
                   <div class="buttons">
