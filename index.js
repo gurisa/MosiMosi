@@ -588,7 +588,7 @@ var app = new Vue({
           this.math.formula[data] = '$$ b = exp \\Biggl( {n\\sum_{i=1}^n (X[i] * Y[i]) - \\sum_{i=1}^n (X[i]) * \\sum_{i=1}^n (Y[i]) \\over (n\\sum_{i=1}^n (X[i]))^2 - (\\sum_{i=1}^n (X[i]))^2) } \\Biggr) $$';
         break;
         case 'a':
-          this.math.formula[data] = '$$ a = exp \\Biggl( {\\sum_{i=1}^n (Y[i]) \\over n} - {\\biggl(b {\\sum_{i=1}^n (X[i]) \\over n} \\biggr) } \\Biggr) $$';
+          this.math.formula[data] = '$$ a = exp \\Biggl( {\\sum_{i=1}^n (Y[i]) \\over n} - {\\biggl(ln(b) {\\sum_{i=1}^n (X[i]) \\over n} \\biggr) } \\Biggr) $$';
         break;   
         default:break;
       }      
