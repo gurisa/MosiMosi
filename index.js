@@ -617,7 +617,7 @@ var app = new Vue({
 document.onreadystatechange = function () {
   if (document.readyState == "interactive") {
     if (document.getElementById('modal-rindu')) {
-      // $('#modal-rindu').modal({keyboard: false, focus: false, show: true });
+      $('#modal-rindu').modal({keyboard: false, focus: false, show: true });
     }
   }
 }
