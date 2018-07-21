@@ -30,6 +30,7 @@
           <div class="card-body">
             <div class="buttons">          
               <button class="btn btn-warning" v-on:click="setDefault(); updateChartInput(); updateChartPrediction();">Default</button>
+              <button class="btn btn-success" v-on:click="setRandom(); updateChartInput(); updateChartPrediction();">Random</button>
               <button class="btn btn-danger" v-bind:class="{ 'active' : config.buttons.stop.active }" v-on:click="stopButton();" v-if="config.buttons.play.active">{{ config.buttons.stop.label }}</button>
               <button class="btn btn-primary" v-bind:class="{ 'active' : config.buttons.play.active }" v-on:click="playButton();" v-if="!config.buttons.play.active">{{ config.buttons.play.label }}</button>          
             </div>
@@ -258,6 +259,7 @@
                   </p>
                   <canvas id="statistic-prediction" width="800" height="500"></canvas>
                   <div class="buttons">
+                      <button class="btn btn-success" v-on:click="setRandom(); updateChartInput(); updateChartPrediction();">Random</button>
                     <button class="btn btn-danger" v-on:click="removePrediction()">Kurangi</button>
                     <button class="btn btn-primary" v-on:click="addPrediction()">Prediksi</button>
                   </div>

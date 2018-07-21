@@ -226,6 +226,17 @@ var app = new Vue({
       ];
       this.reInit(); 
     },
+    setRandom: function() {
+      var data = this.data;
+      if (data) {
+        for (var i = 0; i < data.length; i++) {
+          data[i].x = Math.floor((Math.random() * 30) + 1) + i;
+          data[i].y = (Math.random() * 10000) + 1;
+        }
+        this.data = data;
+        this.reInit(); 
+      }            
+    },
     totalOf: function(data) {
       var total = 0;
       if (data) {        
