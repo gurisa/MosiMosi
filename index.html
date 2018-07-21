@@ -258,8 +258,8 @@
                     <span class="badge badge-dark px-1 py-1">curah hujan akan terus meningkat</span>.
                   </p>
                   <canvas id="statistic-prediction" width="800" height="500"></canvas>
-                  <div class="buttons">
-                      <button class="btn btn-success" v-on:click="setRandom(); updateChartInput(); updateChartPrediction();">Random</button>
+                    <div class="buttons">
+                    <button class="btn btn-success" v-on:click="setRandom(); updateChartInput(); updateChartPrediction();">Random</button>
                     <button class="btn btn-danger" v-on:click="removePrediction()">Kurangi</button>
                     <button class="btn btn-primary" v-on:click="addPrediction()">Prediksi</button>
                   </div>
@@ -305,7 +305,8 @@
           </tbody>
         </table>
       </div>
-    </div>    
+    </div>
+    <img src="assets/images/man.gif" alt="" style="position: fixed; right: -20px; bottom: -20px; width: 250px; height 250px;" v-if="config.man">    
   </div>
 
   <footer class="pt-4 my-md-4 pt-md-4 border-top">
@@ -322,7 +323,7 @@
   </footer>
 
   <div class="raindrops" style="z-index: 10;">&nbsp;</div>
-
+  
   <div class="modal fade" id="modal-rindu" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">

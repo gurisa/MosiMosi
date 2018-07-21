@@ -24,14 +24,15 @@ var app = new Vue({
       buttons: {
         stop: {},
         play: {},
-      },      
+      },
+      man: false,
     },
     math: {
       total: {x: '', y: '', X: '', Y: '', X2: '', XY: '', ya: '', err: ''},
       average: {x: '', y: '', X: '', Y: '', X2: '', XY: '', ya: '', err: ''},
       equation: {a: '', b: '', y: '', g: ''},
       formula: {a: '', b: '', y: '', g: ''},
-    },
+    },    
   },
   mounted: function() {  
 
@@ -137,6 +138,7 @@ var app = new Vue({
           label: 'Play',
         },
       },
+      man: false,
     };
 
     this.setDefault();
@@ -617,6 +619,11 @@ var app = new Vue({
         $('.raindrops').remove();
         $('#container').append('<div class="raindrops" style="z-index: 10;">&nbsp;</div>');
         $('.raindrops').raindrops(this.config.raindrops);
+
+        this.config.man = false;
+        if (newVal === 1 || newVal === 2 || newVal === 3) {
+          this.config.man = true;
+        }              
       }
     }
   },
