@@ -10,303 +10,318 @@
   <title>Curah Hujan - Modelling & Simulation</title>
 </head>
 <body id="container">
-  <div class="container" id="app">
-    <h1 class="text-center mt-3">Curah<strike style="color: gray;">an Hati</strike> Hujan</h1>
-    <hr>
-    <div class="row">
-      <div class="col col-12 col-lg-9 col-md-9 col-sm-12 col-xs-12">
-        
-        <div class="card text-white bg-dark my-3">
-          <div class="card-body">
-            <h5 class="card-title">Petunjuk</h5>
-            <p class="card-text"> 
-              Hasil pengamatan 15 minggu pertama terhadap curah hujan di suatu wilayah diperoleh data seperti yang tertulis pada tabel. 
-              Jika suatu pemodelan matematis dari data pengamatan tersebut ada kecenderungan berbentuk $y = ab^x$ dengan $a$, $b$ adalah parameter data pengamatan, dan $x$, $y$ adalah variable data pengamatan.
-            </p>
-          </div>
+  <div id="app">
+    
+    <nav class="navbar fixed-top" id="main-navbar">
+      <div class="container">
+        <a class="navbar-brand">Curahan Hati</a>
+        <div class="form-inline">
+          <button class="btn btn-warning mr-2" v-on:click="setDefault(); updateChartInput(); updateChartPrediction();">Default</button>
+          <button class="btn btn-success mr-2" v-on:click="setRandom(); updateChartInput(); updateChartPrediction();">Random</button>
+          <button class="btn btn-danger mr-2" v-bind:class="{ 'active' : config.buttons.stop.active }" v-on:click="stopButton();" v-if="config.buttons.play.active">{{ config.buttons.stop.label }}</button>
+          <button class="btn btn-primary mr-2" v-bind:class="{ 'active' : config.buttons.play.active }" v-on:click="playButton();" v-if="!config.buttons.play.active">{{ config.buttons.play.label }}</button>
         </div>
-
-        <div class="card my-3">
-          <div class="card-body">
-            <div class="buttons">          
-              <button class="btn btn-warning" v-on:click="setDefault(); updateChartInput(); updateChartPrediction();">Default</button>
-              <button class="btn btn-success" v-on:click="setRandom(); updateChartInput(); updateChartPrediction();">Random</button>
-              <button class="btn btn-danger" v-bind:class="{ 'active' : config.buttons.stop.active }" v-on:click="stopButton();" v-if="config.buttons.play.active">{{ config.buttons.stop.label }}</button>
-              <button class="btn btn-primary" v-bind:class="{ 'active' : config.buttons.play.active }" v-on:click="playButton();" v-if="!config.buttons.play.active">{{ config.buttons.play.label }}</button>          
+      </div>
+    </nav>
+      
+    <div class="container">
+      <h1 class="text-center mt-3">Curah<strike style="color: gray;">an Hati</strike> Hujan</h1>
+      <hr>
+      <div class="row">
+        <div class="col col-12 col-lg-9 col-md-9 col-sm-12 col-xs-12">
+          
+          <div class="card text-white bg-dark my-3">
+            <div class="card-body">
+              <h5 class="card-title">Petunjuk</h5>
+              <p class="card-text"> 
+                Hasil pengamatan 15 minggu pertama terhadap curah hujan di suatu wilayah diperoleh data seperti yang tertulis pada tabel. 
+                Jika suatu pemodelan matematis dari data pengamatan tersebut ada kecenderungan berbentuk $y = ab^x$ dengan $a$, $b$ adalah parameter data pengamatan, dan $x$, $y$ adalah variable data pengamatan.
+              </p>
             </div>
           </div>
-        </div>
-        
-        <nav>
-          <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a v-for="(question, index) in questions" v-bind:class="{ 'active': index === menu }" class="nav-item nav-link" id="'nav-tab-' + index" data-toggle="tab" v-bind:href="'#tab-' + index" role="tab" v-bind:aria-controls="'tab-' + index" aria-selected="true" v-on:click="menu = index">
-              {{ question.number }}
-            </a>
-          </div>
-        </nav>
-        <div class="tab-content" id="nav-tabContent">          
-          <div v-for="(question, index) in questions" v-bind:class="{ 'show active': index === menu }" class="tab-pane fade" id="'tab-' + index" role="tabpanel" v-bind:aria-labelledby="'nav-tab-' + index">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">{{ 'Pertanyaan ' + question.number }}</h5>
-                <p class="card-text">{{ question.text }}</p>
-                <button class="btn btn-primary" v-on:click="menu = index">Lihat Jawaban</button>
-              </div>
-            </div>                            
-          </div>
-        </div>
-
-        <div class="card my-3">
-          <div class="card-body">
-            <div class="" v-show="menu == 0">
-              <h5>Jawaban 1</h5>
-              <div class="row">
-                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <p>Karena sebelumnya sudah diketahui bahwa data memiliki kecenderungan berbentuk $y = ab^x$ maka metode linearisasi yang digunakan adalah <b>Linearisasi Eksponensial</b>.</p>
-                    <p><b>Langkah melakukan Linearisasi Eksponensial</b></p>
-                    <p>
-                      <ol>
-                        <li>Menaksir fungsi $y = ab^x$ dengan fungsi $Y = a + bX$</li>
-                        <li>
-                          Taksir nilai deviasi model:<br>
-                          $$ r = y - f(x) $$ 
-                          $$ r = y - ab^x $$
-                          $$ karena: R = r^2, maka: R = (y - ab^x)^2 $$
-                        </li>
-                        <li>
-                          Karena nilai deviasi harus dibuat seminimum mungkin (nol) maka: <br>
-                          $$ ∂R/∂a (y - ab^x)^2=-2b^x (y - ab^x) = 0 $$
-                          $$ ∂R/∂b (y - ab^x)^2=-2axb^((x-1)) (y - ab^x) = 0 $$
-                        </li>
-                        <li>
-                          Melalui penyederhanaan persamaan, diperoleh transformasi linear: <br>
-                          $$ Y=log⁡(y); a=log(a); b=log(b); X=x $$                          
-                        </li>
-                        <li>
-                          Sehingga persamaan linear untuk model $ y = ab^x $ adalah: <br>
-                          $$ Y=a+bX $$
-                          $$ log⁡(y) = log⁡(a) + x log(b) $$
-                        </li>
-                      </ol>
-                    </p>
-                </div>
-              </div>              
-            </div>
-            <div class="" v-show="menu == 1">
-              <h5>Jawaban 2</h5>
-              <div class="row">
-                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <p>Parameter $a$ dan $b$ diperoleh dari hasil perhitungan regresi linear sebagai berikut:</p>
-                    <p>
-                      <span v-html="math.formula.b"></span>
-                      <span v-html="math.formula.a"></span>
-                    </p>
-                </div>
-              </div>    
-            </div>
-            <div class="" v-show="menu == 2">
-              <h5>Jawaban 3</h5>
-              <div class="row">
-                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <p>Berdasarkan rumusan pada point 2, nilai $a$ dan $b$ untuk data pada tabel dapat diketahui yakni:</p>
-                    <table class="table table-responsive text-center">
-                      <thead>
-                        <tr>
-                          <th>$X[i] = x[i]$</th>
-                          <th>$y[i]$</th>
-                          <th>$Y[i] = ln(y[i])$</th>
-                          <th>$(X[i])^2$</th>
-                          <th>$X[i] Y[i]$</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(item, index) in data">
-                          <td>
-                            <input type="number" class="form-control" v-model.number="item.x" v-on:change="reInit()">
-                          </td>
-                          <td>
-                            <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
-                          </td>
-                          <td>
-                            <input type="number" class="form-control" v-bind:value="toFixed(item.Y, 4)" readonly>
-                          </td>
-                          <td>
-                            <input type="number" class="form-control" v-bind:value="toFixed(item.X2, 4)" readonly>
-                          </td>
-                          <td>
-                            <input type="number" class="form-control" v-bind:value="toFixed(item.XY, 4)" readonly>
-                          </td>                          
-                        </tr>
-                        <tr>
-                          <td v-html="math.total.x"></td>
-                          <td v-html="math.total.y"></td>
-                          <td v-html="math.total.Y"></td>
-                          <td v-html="math.total.X2"></td>
-                          <td v-html="math.total.XY"></td>
-                        </tr>
-                        <tr>
-                          <td v-html="math.average.x"></td>
-                          <td v-html="math.average.y"></td>
-                          <td v-html="math.average.Y"></td>
-                          <td v-html="math.average.X2"></td>
-                          <td v-html="math.average.XY"></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <hr>                    
-                    <b>Mencari nilai b:</b>
-                    <p>
-                      <span v-html="math.formula.b"></span>
-                      <span v-html="math.equation.b1"></span>
-                      <span v-html="math.equation.b2"></span>
-                      <span v-html="math.equation.b3"></span>
-                      <span v-html="math.equation.b4"></span>
-                      <span v-html="math.equation.b5"></span>
-                    </p>
-                    <b>Mencari nilai a:</b>
-                    <p>
-                      <span v-html="math.formula.a"></span>
-                      <span v-html="math.equation.a1"></span>
-                      <span v-html="math.equation.a2"></span>
-                      <span v-html="math.equation.a3"></span>
-                      <span v-html="math.equation.a4"></span>
-                    </p>
-                </div>
-              </div>  
-            </div>
-            <div class="" v-show="menu == 3">
-              <h5>Jawaban 4</h5>
-              <div class="row">
-                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <p>Setelah mendapatkan nilai parameter <span v-html="math.equation.a"></span> dan <span v-html="math.equation.b"></span> dan model <span v-html="math.equation.y"></span> diperoleh data sebagai berikut:</p>
-                    <table class="table text-center">
-                      <thead>
-                        <tr>
-                          <th>$x[i]$</th>
-                          <th>$y[i]$</th>
-                          <th>$y'[i]$</th>
-                          <th>$g[i]$</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(item, index) in data">
-                          <td>
-                            <input type="number" class="form-control" v-model.number="item.x" v-on:change="reInit()">
-                          </td>
-                          <td>
-                            <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
-                          </td>
-                          <td>
-                            <input type="number" class="form-control" v-bind:value="toFixed(item.ya, 4)" readonly>
-                          </td>
-                          <td>
-                            <input type="number" class="form-control" v-bind:value="toFixed(error[index], 4)" readonly>
-                          </td>                      
-                        </tr>
-                        <tr>
-                          <td v-html="math.total.x"></td>
-                          <td v-html="math.total.y"></td>
-                          <td v-html="math.total.ya"></td>
-                          <td v-html="math.total.err"></td>
-                        </tr>
-                        <tr>
-                          <td v-html="math.average.x"></td>
-                          <td v-html="math.average.y"></td>
-                          <td v-html="math.average.ya"></td>
-                          <td v-html="math.average.err"></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <p>
-                      Untuk mengetahui dan memastikan bahwa model yang digunakan baik, dilakukan perhitungan galat dengan cara mencari selisih antara data yang sebenarnya dengan data hasil pemodelan. <br>
-                      <span v-html="math.equation.e"></span>
-                    </p>
-                    <p>
-                      Berdasarkan nilai galat yang diperoleh sebesar <span v-html="math.equation.g"></span> dapat disimpulkan bahwa: <br>
-                      Model <span v-html="math.equation.y"></span>
-                      <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 5 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 5 ) }">
-                          {{ (toFixed(parameter.g, 4) > 5 ) ? 'kurang sesuai' : 'sesuai' }} 
-                      </span>                    
-                      digunakan untuk data pada tabel dikarenakan galatnya 
-                      <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 5 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 5 ) }">
-                        {{ (toFixed(parameter.g, 4) > 5 ) ? 'melebihi' : 'kurang' }} 
-                      </span> 
-                      dari toleransi galat sebesar $5\%$
-                    </p>
-                </div>
-              </div>  
-            </div>
-            <div class="" v-show="menu == 4">
-              <div class="row snow-container">
-                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                  <h5>Jawaban 5</h5>
-                  <canvas id="statistic-input" width="800" height="500"></canvas>
-                </div>
+  
+          <div class="card my-3">
+            <div class="card-body">
+              <div class="buttons">          
+                <button class="btn btn-warning" v-on:click="setDefault(); updateChartInput(); updateChartPrediction();">Default</button>
+                <button class="btn btn-success" v-on:click="setRandom(); updateChartInput(); updateChartPrediction();">Random</button>
+                <button class="btn btn-danger" v-bind:class="{ 'active' : config.buttons.stop.active }" v-on:click="stopButton();" v-if="config.buttons.play.active">{{ config.buttons.stop.label }}</button>
+                <button class="btn btn-primary" v-bind:class="{ 'active' : config.buttons.play.active }" v-on:click="playButton();" v-if="!config.buttons.play.active">{{ config.buttons.play.label }}</button>
               </div>
             </div>
-            <div class="" v-show="menu == 5">
-              <div class="row">
-                <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                  <h5>Jawaban 6</h5>
-                  <p>
-                    Setelah melalui proses perhitungan yang dilakukan pada pertanyaan 4, diperoleh: <br> 
-                    <span v-html="math.equation.a"></span> dan <span v-html="math.equation.b"></span> <br>
-                    <span v-html="math.equation.y"></span> dan <span v-html="math.equation.g"></span> <br>                    
-                  </p>
-                  <p>
-                    Berdasarkan kecenderungan data dan model, curah hujan di masa yang akan datang yakni pada minggu ke-16, 17, 18, .., dst. 
-                    <span class="badge badge-dark px-1 py-1">curah hujan akan terus meningkat</span>.
-                  </p>
-                  <canvas id="statistic-prediction" width="800" height="500"></canvas>
-                    <div class="buttons">
-                    <button class="btn btn-success" v-on:click="setRandom(); updateChartInput(); updateChartPrediction();">Random</button>
-                    <button class="btn btn-danger" v-on:click="removePrediction()">Kurangi</button>
-                    <button class="btn btn-primary" v-on:click="addPrediction()">Prediksi</button>
+          </div>
+          
+          <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <a v-for="(question, index) in questions" v-bind:class="{ 'active': index === menu }" class="nav-item nav-link" id="'nav-tab-' + index" data-toggle="tab" v-bind:href="'#tab-' + index" role="tab" v-bind:aria-controls="'tab-' + index" aria-selected="true" v-on:click="menu = index">
+                {{ question.number }}
+              </a>
+            </div>
+          </nav>
+          <div class="tab-content" id="nav-tabContent">          
+            <div v-for="(question, index) in questions" v-bind:class="{ 'show active': index === menu }" class="tab-pane fade" id="'tab-' + index" role="tabpanel" v-bind:aria-labelledby="'nav-tab-' + index">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">{{ 'Pertanyaan ' + question.number }}</h5>
+                  <p class="card-text">{{ question.text }}</p>
+                  <button class="btn btn-primary" v-on:click="menu = index">Lihat Jawaban</button>
+                </div>
+              </div>                            
+            </div>
+          </div>
+  
+          <div class="card my-3">
+            <div class="card-body">
+              <div class="" v-show="menu == 0">
+                <h5>Jawaban 1</h5>
+                <div class="row">
+                  <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <p>Karena sebelumnya sudah diketahui bahwa data memiliki kecenderungan berbentuk $y = ab^x$ maka metode linearisasi yang digunakan adalah <b>Linearisasi Eksponensial</b>.</p>
+                      <p><b>Langkah melakukan Linearisasi Eksponensial</b></p>
+                      <p>
+                        <ol>
+                          <li>Menaksir fungsi $y = ab^x$ dengan fungsi $Y = a + bX$</li>
+                          <li>
+                            Taksir nilai deviasi model:<br>
+                            $$ r = y - f(x) $$ 
+                            $$ r = y - ab^x $$
+                            $$ karena: R = r^2, maka: R = (y - ab^x)^2 $$
+                          </li>
+                          <li>
+                            Karena nilai deviasi harus dibuat seminimum mungkin (nol) maka: <br>
+                            $$ ∂R/∂a (y - ab^x)^2=-2b^x (y - ab^x) = 0 $$
+                            $$ ∂R/∂b (y - ab^x)^2=-2axb^((x-1)) (y - ab^x) = 0 $$
+                          </li>
+                          <li>
+                            Melalui penyederhanaan persamaan, diperoleh transformasi linear: <br>
+                            $$ Y=log⁡(y); a=log(a); b=log(b); X=x $$                          
+                          </li>
+                          <li>
+                            Sehingga persamaan linear untuk model $ y = ab^x $ adalah: <br>
+                            $$ Y=a+bX $$
+                            $$ log⁡(y) = log⁡(a) + x log(b) $$
+                          </li>
+                        </ol>
+                      </p>
                   </div>
-                  <hr>
-                  <span class="badge badge-dark px-2 py-2 mr-1 my-1" v-for="(item, index) in prediction" v-if="index < 15">
-                    {{ index + 1 }}: {{ toFixed(item, 4) }} <br>
-                  </span>
-                  <span class="badge badge-success px-2 py-2 mr-1 my-1" v-for="(item, index) in prediction" v-if="index >= 15">
-                    {{ index + 1 }}: {{ toFixed(item, 4) }} <br>
-                  </span>
+                </div>              
+              </div>
+              <div class="" v-show="menu == 1">
+                <h5>Jawaban 2</h5>
+                <div class="row">
+                  <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <p>Parameter $a$ dan $b$ diperoleh dari hasil perhitungan regresi linear sebagai berikut:</p>
+                      <p>
+                        <span v-html="math.formula.b"></span>
+                        <span v-html="math.formula.a"></span>
+                      </p>
+                  </div>
+                </div>    
+              </div>
+              <div class="" v-show="menu == 2">
+                <h5>Jawaban 3</h5>
+                <div class="row">
+                  <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <p>Berdasarkan rumusan pada point 2, nilai $a$ dan $b$ untuk data pada tabel dapat diketahui yakni:</p>
+                      <table class="table table-responsive text-center">
+                        <thead>
+                          <tr>
+                            <th>$X[i] = x[i]$</th>
+                            <th>$y[i]$</th>
+                            <th>$Y[i] = ln(y[i])$</th>
+                            <th>$(X[i])^2$</th>
+                            <th>$X[i] Y[i]$</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(item, index) in data">
+                            <td>
+                              <input type="number" class="form-control" v-model.number="item.x" v-on:change="reInit()">
+                            </td>
+                            <td>
+                              <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
+                            </td>
+                            <td>
+                              <input type="number" class="form-control" v-bind:value="toFixed(item.Y, 4)" readonly>
+                            </td>
+                            <td>
+                              <input type="number" class="form-control" v-bind:value="toFixed(item.X2, 4)" readonly>
+                            </td>
+                            <td>
+                              <input type="number" class="form-control" v-bind:value="toFixed(item.XY, 4)" readonly>
+                            </td>                          
+                          </tr>
+                          <tr>
+                            <td v-html="math.total.x"></td>
+                            <td v-html="math.total.y"></td>
+                            <td v-html="math.total.Y"></td>
+                            <td v-html="math.total.X2"></td>
+                            <td v-html="math.total.XY"></td>
+                          </tr>
+                          <tr>
+                            <td v-html="math.average.x"></td>
+                            <td v-html="math.average.y"></td>
+                            <td v-html="math.average.Y"></td>
+                            <td v-html="math.average.X2"></td>
+                            <td v-html="math.average.XY"></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <hr>                    
+                      <b>Mencari nilai b:</b>
+                      <p>
+                        <span v-html="math.formula.b"></span>
+                        <span v-html="math.equation.b1"></span>
+                        <span v-html="math.equation.b2"></span>
+                        <span v-html="math.equation.b3"></span>
+                        <span v-html="math.equation.b4"></span>
+                        <span v-html="math.equation.b5"></span>
+                      </p>
+                      <b>Mencari nilai a:</b>
+                      <p>
+                        <span v-html="math.formula.a"></span>
+                        <span v-html="math.equation.a1"></span>
+                        <span v-html="math.equation.a2"></span>
+                        <span v-html="math.equation.a3"></span>
+                        <span v-html="math.equation.a4"></span>
+                      </p>
+                  </div>
+                </div>  
+              </div>
+              <div class="" v-show="menu == 3">
+                <h5>Jawaban 4</h5>
+                <div class="row">
+                  <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <p>Setelah mendapatkan nilai parameter <span v-html="math.equation.a"></span> dan <span v-html="math.equation.b"></span> dan model <span v-html="math.equation.y"></span> diperoleh data sebagai berikut:</p>
+                      <table class="table text-center">
+                        <thead>
+                          <tr>
+                            <th>$x[i]$</th>
+                            <th>$y[i]$</th>
+                            <th>$y'[i]$</th>
+                            <th>$g[i]$</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(item, index) in data">
+                            <td>
+                              <input type="number" class="form-control" v-model.number="item.x" v-on:change="reInit()">
+                            </td>
+                            <td>
+                              <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
+                            </td>
+                            <td>
+                              <input type="number" class="form-control" v-bind:value="toFixed(item.ya, 4)" readonly>
+                            </td>
+                            <td>
+                              <input type="number" class="form-control" v-bind:value="toFixed(error[index], 4)" readonly>
+                            </td>                      
+                          </tr>
+                          <tr>
+                            <td v-html="math.total.x"></td>
+                            <td v-html="math.total.y"></td>
+                            <td v-html="math.total.ya"></td>
+                            <td v-html="math.total.err"></td>
+                          </tr>
+                          <tr>
+                            <td v-html="math.average.x"></td>
+                            <td v-html="math.average.y"></td>
+                            <td v-html="math.average.ya"></td>
+                            <td v-html="math.average.err"></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p>
+                        Untuk mengetahui dan memastikan bahwa model yang digunakan baik, dilakukan perhitungan galat dengan cara mencari selisih antara data yang sebenarnya dengan data hasil pemodelan. <br>
+                        <span v-html="math.equation.e"></span>
+                      </p>
+                      <p>
+                        Berdasarkan nilai galat yang diperoleh sebesar <span v-html="math.equation.g"></span> dapat disimpulkan bahwa: <br>
+                        Model <span v-html="math.equation.y"></span>
+                        <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 5 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 5 ) }">
+                            {{ (toFixed(parameter.g, 4) > 5 ) ? 'kurang sesuai' : 'sesuai' }} 
+                        </span>                    
+                        digunakan untuk data pada tabel dikarenakan galatnya 
+                        <span class="badge px-1 py-1" v-bind:class="{ 'badge-danger' : (toFixed(parameter.g, 4) > 5 ), 'badge-primary' : (toFixed(parameter.g, 4) <= 5 ) }">
+                          {{ (toFixed(parameter.g, 4) > 5 ) ? 'melebihi' : 'kurang' }} 
+                        </span> 
+                        dari toleransi galat sebesar $5\%$
+                      </p>
+                  </div>
+                </div>  
+              </div>
+              <div class="" v-show="menu == 4">
+                <div class="row snow-container">
+                  <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h5>Jawaban 5</h5>
+                    <canvas id="statistic-input" width="800" height="500"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="" v-show="menu == 5">
+                <div class="row">
+                  <div class="col col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h5>Jawaban 6</h5>
+                    <p>
+                      Setelah melalui proses perhitungan yang dilakukan pada pertanyaan 4, diperoleh: <br> 
+                      <span v-html="math.equation.a"></span> dan <span v-html="math.equation.b"></span> <br>
+                      <span v-html="math.equation.y"></span> dan <span v-html="math.equation.g"></span> <br>                    
+                    </p>
+                    <p>
+                      Berdasarkan kecenderungan data dan model, curah hujan di masa yang akan datang yakni pada minggu ke-16, 17, 18, .., dst. 
+                      <span class="badge badge-dark px-1 py-1">curah hujan akan terus meningkat</span>.
+                    </p>
+                    <canvas id="statistic-prediction" width="800" height="500"></canvas>
+                      <div class="buttons">
+                      <button class="btn btn-success" v-on:click="setRandom(); updateChartInput(); updateChartPrediction();">Random</button>
+                      <button class="btn btn-danger" v-on:click="removePrediction()">Kurangi</button>
+                      <button class="btn btn-primary" v-on:click="addPrediction()">Prediksi</button>
+                    </div>
+                    <hr>
+                    <span class="badge badge-dark px-2 py-2 mr-1 my-1" v-for="(item, index) in prediction" v-if="index < 15">
+                      {{ index + 1 }}: {{ toFixed(item, 4) }} <br>
+                    </span>
+                    <span class="badge badge-success px-2 py-2 mr-1 my-1" v-for="(item, index) in prediction" v-if="index >= 15">
+                      {{ index + 1 }}: {{ toFixed(item, 4) }} <br>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          
         </div>
-        
+        <div class="col col-12 col-lg-3 col-md-3 col-sm-12 col-xs-12">
+          <table class="table text-center">
+            <thead>
+              <tr>
+                <th class="text-center">Minggu <br> ($x$)</th>
+                <th class="text-center">Curah Hujan <br> ($y$)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in data">
+                <td>
+                  <input type="number" class="form-control" v-model.number="item.x" v-on:change="reInit()">
+                </td>
+                <td>
+                  <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
+                </td>
+              </tr>
+              <tr>
+                <td v-html="math.total.x"></td>
+                <td v-html="math.total.y"></td>
+              </tr>
+              <tr>
+                <td v-html="math.average.x"></td>
+                <td v-html="math.average.y"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="col col-12 col-lg-3 col-md-3 col-sm-12 col-xs-12">
-        <table class="table text-center">
-          <thead>
-            <tr>
-              <th class="text-center">Minggu <br> ($x$)</th>
-              <th class="text-center">Curah Hujan <br> ($y$)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in data">
-              <td>
-                <input type="number" class="form-control" v-model.number="item.x" v-on:change="reInit()">
-              </td>
-              <td>
-                <input type="number" class="form-control" v-model.number="item.y" v-on:change="reInit()">
-              </td>
-            </tr>
-            <tr>
-              <td v-html="math.total.x"></td>
-              <td v-html="math.total.y"></td>
-            </tr>
-            <tr>
-              <td v-html="math.average.x"></td>
-              <td v-html="math.average.y"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <img src="assets/images/man.gif" alt="" style="position: fixed; right: -20px; bottom: -20px; width: 250px; height 250px;" v-if="config.man">    
+      <img src="assets/images/man.gif" alt="" style="position: fixed; right: -20px; bottom: -20px; width: 250px; height 250px;" v-if="config.man">
+    </div>        
   </div>
 
   <footer class="pt-4 my-md-4 pt-md-4 border-top">

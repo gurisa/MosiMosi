@@ -504,6 +504,7 @@ var app = new Vue({
 
       this.config.buttons.play.active = !this.config.buttons.play.active;
       this.config.buttons.stop.active = !this.config.buttons.stop.active;
+      this.config.man = !this.config.man;
     },
     normalMode: function() {
       this.chart.config.input.options.title.fontColor = '#34495e';
